@@ -1,0 +1,44 @@
+services:
+  db:
+    container_name: sg-selector-db
+    image: postgis/postgis
+    hostname: db
+    ports:
+      - "5432:5432"
+    env_file:
+      - dev.env
+    volumes:
+      - pg_conf:/etc/postgresql
+      - pg_log:/var/log/postgresql
+      - pg_data:/var/lib/postgresql/data
+    # Log all statements
+    # See: https://postgresqlco.nf/doc/en/param/log_statement/
+    command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+    restart: unless-stopped
+
+  backend:
+    container_name: sg-selector-backend
+    build: ./backend
+    volumes:
+      - ./backend:/code
+      # Mount the examples to perform an example request
+      - ./examples:/examples
+    ports:
+      - "8000:8000"
+    env_file:
+      - dev.env
+    depends_on:
+      - db
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ./wait-for-postgres.sh
+        poetry run python backend/manage.py migrate
+        poetry run python backend/manage.py runserver 0.0.0.0:8000
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+  pg_conf:
+  pg_log:
