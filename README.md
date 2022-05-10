@@ -1,6 +1,4 @@
-## SG Selector Library
-
-`WORK IN PROGRESS`
+# SG Selector Library
 
 ## Quickstart
 
