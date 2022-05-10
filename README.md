@@ -27,7 +27,7 @@ docker exec -t -i sg-selector-backend poetry run python backend/manage.py load_s
 
 Select signal groups along a given route. The body of the POST request should contain a route as follows:
 
-```json
+```
 {
     "route": [
         { "lon": <longitude>, "lat": <latitude>, "alt": <altitude> },
@@ -46,7 +46,7 @@ curl --data "@examples/route_hamburg.json" http://localhost:8000/routing/select
 
 Results are in the following structure:
 
-```json
+```
 {
   "waypoints": [
     {
