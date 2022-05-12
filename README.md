@@ -130,9 +130,9 @@ With the running docker-compose setup and loaded (example) routes, visit [http:/
 
 If you like to contribute new models, make sure to create a sufficient dataset with the Route Composer. Then, you can use the following Django management commands:
 
-- `tune_metamodel` for Hyperparameter tuning with Optuna
-- `make_ml_dataset` for the creation of a gzipped ML feature dataset
-- `train_ml_models` for a raster search on a created ML feature dataset
+- [`tune_metamodel`](backend/backend/routing/management/commands/tune_metamodel.py) for Hyperparameter tuning with Optuna
+- [`make_ml_dataset`](backend/backend/routing/management/commands/make_ml_dataset.py) for the creation of a gzipped ML feature dataset
+- [`train_ml_models`](backend/backend/routing/management/commands/train_ml_models.py) for a raster search on a created ML feature dataset
 
 ### Anything unclear?
 
