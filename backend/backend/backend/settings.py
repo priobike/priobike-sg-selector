@@ -44,6 +44,13 @@ INSTALLED_APPS = [
     'routing',
 ]
 
+if DEBUG:
+    # Include development modules
+    INSTALLED_APPS += [
+        'composer',
+        'analytics',
+    ]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -149,3 +156,6 @@ LONLAT = WGS84_SRID
 # The Mercator projection is used to represent distances in meters
 MERCATOR_SRID = 3857
 METRICAL = MERCATOR_SRID
+
+# The basic route search radius in meters
+SEARCH_RADIUS_M = 20

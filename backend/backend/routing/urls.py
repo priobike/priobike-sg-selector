@@ -1,9 +1,9 @@
 from django.urls import path
 
-from routing.views import SignalGroupSelectionView
+from routing.views import SGSelectionView
 
 app_name = "routing"
 
 urlpatterns = [
-    path("select", SignalGroupSelectionView.as_view(), name="select"),
+    path("select", SGSelectionView.as_view(), name="select"),
 ]

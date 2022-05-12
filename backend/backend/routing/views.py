@@ -15,7 +15,7 @@ from django.views.generic import View
 
 from routing.matching import get_matches
 from routing.matching.hypermodel import get_best_hypermodel
-from routing.models import SignalGroup
+from routing.models import SG
 
 
 class RouteJsonValidator:
@@ -46,15 +46,15 @@ class RouteJsonValidator:
 
 
 Snap = namedtuple("Snap", [
-    "sg", # The associated SignalGroup
+    "sg", # The associated SG
     "snapped_point", # The snapped point, in WGS84
     "route_distance", # The projected distance on the route, in meters
 ])
 
 
-def snap(sgs: Iterable[SignalGroup], route: LineString) -> List[Snap]:
+def snap(sgs: Iterable[SG], route: LineString) -> List[Snap]:
     """
-    Snap the SignalGroups to the route. Returns the snapped SignalGroups in the order of the route.
+    Snap the SGs to the route. Returns the snapped SGs in the order of the route.
     """
     metrical_route = route.transform(settings.METRICAL, clone=True)
 
@@ -89,7 +89,7 @@ def make_waypoints(snaps: Iterable[Snap], route: LineString) -> List[dict]:
         point = Point(x, y, z, srid=route_m.srid)
         distance = route_m.project(point)
 
-        # If we surpassed SignalGroups, we need to add them as matches
+        # If we surpassed SGs, we need to add them as matches
         # and remove them from the list of upcoming sgs
         while sgs and sg_points and sg_distances and distance > sg_distances[0]:
             surpassed_sg, surpassed_sg_point, _ = sgs.pop(0), sg_points.pop(0), sg_distances.pop(0)
@@ -102,7 +102,7 @@ def make_waypoints(snaps: Iterable[Snap], route: LineString) -> List[dict]:
             })
 
         if not sgs or not sg_points or not sg_distances:
-            # If there is no next SignalGroup, we can't match the point to any SignalGroup
+            # If there is no next SG, we can't match the point to any SG
             waypoints.append({
                 "lon": lon,
                 "lat": lat,
@@ -123,7 +123,7 @@ def make_waypoints(snaps: Iterable[Snap], route: LineString) -> List[dict]:
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class SignalGroupSelectionView(View):
+class SGSelectionView(View):
     """
     View to find signal groups along a given route.
     """
@@ -150,7 +150,7 @@ class SignalGroupSelectionView(View):
         matcher = get_best_hypermodel()
         unordered_sgs = get_matches(route_linestring, [matcher])
 
-        # Snap the SignalGroup positions to the route as marked waypoints
+        # Snap the SG positions to the route as marked waypoints
         snaps = snap(unordered_sgs, route_linestring)
 
         # Insert the snapped waypoints into the route

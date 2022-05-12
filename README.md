@@ -32,14 +32,15 @@ docker-compose up
 
 On the very first startup, this will download the base Docker images and build the containers (can take some time). 
 
-### 2. Load the example signal groups into the database
+### 2. Load example data into the database
 
-We provide an example JSON which you can load into the database. This JSON is inherited from the Urban Data Platform Hamburg, which uses a [FROST](https://github.com/FraunhoferIOSB/FROST-Server) API.
-However, the service is not limited to this specific data format. See [backend/routing/models.py](backend/routing/models.py) for the basic model structure.
+We provide example data so that you can understand our data format and try it out for yourself. This data is inherited from the Urban Data Platform Hamburg, which uses a [FROST](https://github.com/FraunhoferIOSB/FROST-Server) API. With the running docker-compose setup, run the following command to load all data.
 
 ```bash
-docker exec -t -i sg-selector-backend poetry run python backend/manage.py load_sgs /examples/sgs_hamburg.json
+./load-example-data.sh
 ```
+
+You may need to wait until all services are finished starting.
 
 ### 3. Send a request to the REST Endpoint at *POST* `/routing/select`
 
@@ -109,14 +110,33 @@ Results are in the following structure:
 
 ## 💡 Contributing
 
-This library is available under MIT License. Contributions are welcome. Here are our current TODOs:
+This library is available under MIT License. Contributions are welcome. Here is our current progress:
 
 - [x] Publish usable library with our topologic feature matching pipeline
-- [ ] Incorporate Python scripts for random route generation
-- [ ] Polish and push management commands for hypermodel training and testing
-- [ ] Add Route Composer web application which is used for training dataset generation
-- [ ] Include experimental matching approaches (H3-Cells, ML-Model, ...)
+- [x] Incorporate [Python scripts](examples/scripts/generate_routes.py) for random route generation
+- [x] Polish and push management commands for hypermodel [training](backend/backend/routing/management/commands/tune_metamodel.py) and [testing](backend/backend/analytics/management/commands/run_analysis.py)
+- [x] Add [Route Composer](frontend) web application which is used for training dataset generation
+- [x] Include experimental matching approaches ([ML-Model](backend/backend/routing/matching/experimental/features.py), [Dijkstra](backend/backend/routing/matching/experimental/dijkstra.py), [Probabilistic](backend/backend/routing/matching/experimental/markov.py))
+- [ ] Advance experimental ML-based feature matching approach
 - [ ] ...
+
+### Route Composer
+
+![Composer](images/composer.png)
+
+With the running docker-compose setup and loaded (example) routes, visit [http://localhost:3000/composer?route_id=1](http://localhost:3000/composer?route_id=1) to start picking traffic lights to routes. If you click on "submit", this will save the route bindings in the [bindings dir](examples/bindings). 
+
+### Metamodel or ML Model Training and Testing
+
+If you like to contribute new models, make sure to create a sufficient dataset with the Route Composer. Then, you can use the following Django management commands:
+
+- `tune_metamodel` for Hyperparameter tuning with Optuna
+- `make_ml_dataset` for the creation of a gzipped ML feature dataset
+- `train_ml_models` for a raster search on a created ML feature dataset
+
+### Anything unclear?
+
+Help us improving this documentation. If you have any problems or unclarities, feel free to open an issue.
 
 ## 💥 Troubleshooting
 

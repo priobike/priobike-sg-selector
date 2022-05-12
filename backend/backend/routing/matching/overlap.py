@@ -6,19 +6,19 @@ from django.contrib.gis.geos import LineString, Point
 from django.db.models.query import QuerySet
 from routing.matching import RouteMatcher
 from routing.matching.bearing import calc_side
-from routing.models import SignalGroup
+from routing.models import SG
 
 RouteSection = namedtuple("RouteSection", ["min_fraction", "max_fraction"])
 
 
-def calc_sections(sgs: Iterable[SignalGroup], route: LineString, system=settings.LONLAT) -> Dict[str, RouteSection]:
+def calc_sections(sgs: Iterable[SG], route: LineString, system=settings.LONLAT) -> Dict[str, RouteSection]:
     """
-    Calculate the sections of the route that are covered by the SignalGroups.
+    Calculate the sections of the route that are covered by the SGs.
 
-    Returns a dict with the section for each SignalGroup id,
+    Returns a dict with the section for each SG id,
     where the fractions are in the interval [0, 1].
 
-    Example: if the SignalGroup covers the first 100m of a 400m route, the section will be (0, 0.25).
+    Example: if the SG covers the first 100m of a 400m route, the section will be (0, 0.25).
     """
 
     system_route = route.transform(system, clone=True)
@@ -39,9 +39,9 @@ def calc_sections(sgs: Iterable[SignalGroup], route: LineString, system=settings
     return section_dict
 
 
-def calc_distances(sgs: Iterable[SignalGroup], route: LineString, system=settings.METRICAL) -> Dict[str, float]:
+def calc_distances(sgs: Iterable[SG], route: LineString, system=settings.METRICAL) -> Dict[str, float]:
     """
-    Calculate the distances of the SignalGroups to the route.
+    Calculate the distances of the SGs to the route.
 
     The measurement unit of the distances is given by the projection system.
     Use the Mercator projection system for distances in meters.
@@ -57,9 +57,9 @@ def calc_distances(sgs: Iterable[SignalGroup], route: LineString, system=setting
     return distance_dict
 
 
-def calc_sides(sgs: Iterable[SignalGroup], route: LineString) -> Dict[str, str]:
+def calc_sides(sgs: Iterable[SG], route: LineString) -> Dict[str, str]:
     """
-    Calculate the sides of the SignalGroups with regards to the route direction.
+    Calculate the sides of the SGs with regards to the route direction.
     """
 
     side_dict = {}
@@ -83,8 +83,8 @@ class OverlapMatcher(RouteMatcher):
         Initialize the OverlapMatcher.
 
         :param road_side_threshold: The maximum difference in distance of meters that
-        two SignalGroups can have to be chosen by road side primarily
-        :param perfect_match_threshold: The maximum distance of an SignalGroup to the route
+        two SGs can have to be chosen by road side primarily
+        :param perfect_match_threshold: The maximum distance of an SG to the route
         to be considereda perfect match to the route
         :param overlap_pct_threshold: The minimum percentage of an overlap between
         two lines to be considered as one
@@ -106,7 +106,7 @@ class OverlapMatcher(RouteMatcher):
         0.1       0.5
 
         The overlap is between 0.2 and 0.5, i.e. 0.3 and therefore 0.3/0.5 = 0.6 -> 60%
-        Now, if the overlap is above a given threshold, the two SignalGroups are considered to be overlapping.
+        Now, if the overlap is above a given threshold, the two SGs are considered to be overlapping.
         """
 
         overlaps = set()
@@ -131,7 +131,7 @@ class OverlapMatcher(RouteMatcher):
 
     def matches(self, sgs: QuerySet, route: LineString) -> Tuple[QuerySet, LineString]:
         """
-        Remove SignalGroups that have overlaps with other SignalGroups with regards to the route,
+        Remove SGs that have overlaps with other SGs with regards to the route,
         but have a worse match to the route.
         """
         sgs, route = super().matches(sgs, route)

@@ -9,8 +9,8 @@ from routing.matching.overlap import (OverlapMatcher, RouteSection,
 
 class OverlapCalculationTest(TestCase):
     mocked_sgs = [
-        MagicMock(id="SignalGroup1", geometry=LineString([(0, 0), (0, 10), (0, 20)], srid=3857)),
-        MagicMock(id="SignalGroup2", geometry=LineString([(0, 0), (10, 0), (10, 10)], srid=3857)),
+        MagicMock(id="SG1", geometry=LineString([(0, 0), (0, 10), (0, 20)], srid=3857)),
+        MagicMock(id="SG2", geometry=LineString([(0, 0), (10, 0), (10, 10)], srid=3857)),
     ]
     route = LineString([(0, 0), (0, 10), (0, 20)], srid=3857)
 
@@ -18,12 +18,12 @@ class OverlapCalculationTest(TestCase):
         sections = calc_sections(self.mocked_sgs, self.route)
         self.assertEqual(len(sections), 2)
 
-        section = sections["SignalGroup1"]
+        section = sections["SG1"]
         self.assertEqual(section.min_fraction, 0.0)
         # Projection covers the whole route
         self.assertEqual(section.max_fraction, 1.0)
 
-        section = sections["SignalGroup2"]
+        section = sections["SG2"]
         self.assertEqual(section.min_fraction, 0.0)
         # Projection only covers 50% of the route
         self.assertEqual(section.max_fraction, 0.5)
@@ -33,7 +33,7 @@ class OverlapCalculationTest(TestCase):
         Validate that the distances are calculated correctly.
 
         The distance should be defined as the distance between the start of the
-        route and the start of the SignalGroups.
+        route and the start of the SGs.
         """
         distance_dict = calc_distances(self.mocked_sgs, self.route)
         self.assertEqual(len(distance_dict), 2)
@@ -49,11 +49,11 @@ class OverlapCalculationTest(TestCase):
     def test_calc_overlaps(self):
         matcher = OverlapMatcher(overlap_pct_threshold=0.5)
         sections = {
-            "SignalGroup1": RouteSection(0.2, 0.6),
-            "SignalGroup2": RouteSection(0.1, 0.5),
+            "SG1": RouteSection(0.2, 0.6),
+            "SG2": RouteSection(0.1, 0.5),
         }
         overlaps = matcher.calc_overlaps(sections)
         self.assertEqual(len(overlaps), 1)
         overlap = next(iter(overlaps))
-        self.assertTrue("SignalGroup1" in [overlap.sg_1_id, overlap.sg_2_id])
-        self.assertTrue("SignalGroup2" in [overlap.sg_1_id, overlap.sg_2_id])
+        self.assertTrue("SG1" in [overlap.sg_1_id, overlap.sg_2_id])
+        self.assertTrue("SG2" in [overlap.sg_1_id, overlap.sg_2_id])

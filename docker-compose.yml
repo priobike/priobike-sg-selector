@@ -38,6 +38,25 @@ services:
         poetry run python backend/manage.py runserver 0.0.0.0:8000
     restart: unless-stopped
 
+  frontend:
+    container_name: sg-selector-frontend
+    build: ./frontend
+    volumes:
+      - ./frontend:/code
+    ports:
+      - "3000:3000"
+    env_file:
+      - dev.env
+    depends_on:
+      - backend   
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        cd code
+        yarn install
+        yarn start
+
 volumes:
   pg_data:
   pg_conf:

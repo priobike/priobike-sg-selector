@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.gis.geos import LineString, Point
 from routing.matching import ElementwiseRouteMatcher
 from routing.matching.projection import project_onto_route
-from routing.models import SignalGroup
+from routing.models import SG
 
 
 def calc_segment_lengths(linestring: LineString, system=settings.METRICAL) -> List[float]:
@@ -99,7 +99,7 @@ class LengthMatcher(ElementwiseRouteMatcher):
             return False
         return True
 
-    def match(self, sg: SignalGroup, route: LineString) -> bool:
+    def match(self, sg: SG, route: LineString) -> bool:
         segment_lengths = []
         length_diffs = []
 

@@ -6,7 +6,7 @@ from django.contrib.gis.geos import LineString
 from routing.matching import ElementwiseRouteMatcher
 from routing.matching.length import calc_segment_lengths, normalize_sum
 from routing.matching.projection import project_onto_route
-from routing.models import SignalGroup
+from routing.models import SG
 
 
 def get_linestring_bearing(linestring: LineString) -> float:
@@ -169,7 +169,7 @@ class BearingMatcher(ElementwiseRouteMatcher):
 
         return False
 
-    def match(self, sg: SignalGroup, route: LineString) -> bool:
+    def match(self, sg: SG, route: LineString) -> bool:
         segment_lengths = []
         bearing_diffs = []
 
