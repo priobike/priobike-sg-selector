@@ -7,7 +7,7 @@ Table of contents:
 - 💡 [Contributing](#contributing) - which advancements are planned and how can I help?
 - 💥 [Troubleshooting](#troubleshooting) - which problems may occur?
 
-## Introduction
+## 📚 Introduction
 
 ![Filtering image](images/filtering.drawio.svg)
 
@@ -20,7 +20,7 @@ With the signal group (sg) selector library, it is possible to match traffic lig
 
 This filtering pipeline is defined as a [hypermodel](backend/backend/routing/matching/hypermodel.py) and tuned by Optuna on a training dataset. The best [configuration](backend/backend/config/topologic.hypermodel.json) is available with a RESTful API.
 
-## Quickstart
+## 🔧 Quickstart
 
 ### 1. Build and run the development setup
 
@@ -107,10 +107,17 @@ Results are in the following structure:
 }
 ```
 
-## Contributing
+## 💡 Contributing
 
-`WIP`
+This library is available under MIT License. Contributions are welcome. Here are our current TODOs:
 
-## Troubleshooting
+- [x] Publish usable library with our topologic feature matching pipeline
+- [ ] Incorporate Python scripts for random route generation
+- [ ] Polish and push management commands for hypermodel training and testing
+- [ ] Add Route Composer web application which is used for training dataset generation
+- [ ] Include experimental matching approaches (H3-Cells, ML-Model, ...)
+- [ ] ...
+
+## 💥 Troubleshooting
 
 You may have to make the entrypoint scripts executable with `chmod +x path/to/entrypoint.sh`.
