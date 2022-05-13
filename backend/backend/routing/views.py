@@ -3,10 +3,10 @@ import logging
 from collections import namedtuple
 from typing import Iterable, List
 
+import pyproj
 from django.conf import settings
 from django.contrib.gis.geos import LineString, Point
 from django.core.exceptions import ValidationError
-from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
@@ -47,80 +47,87 @@ class RouteJsonValidator:
 
 Snap = namedtuple("Snap", [
     "sg", # The associated SG
-    "snapped_point", # The snapped point, in WGS84
-    "route_distance", # The projected distance on the route, in meters
+    "point", # The snapped point, in WGS84
 ])
 
 
 def snap(sgs: Iterable[SG], route: LineString) -> List[Snap]:
     """
-    Snap the SGs to the route. Returns the snapped SGs in the order of the route.
+    Snap the SGs to the route. Returns an unordered list of Snaps.
     """
-    metrical_route = route.transform(settings.METRICAL, clone=True)
-
+    lonlat_route = route.transform(settings.LONLAT, clone=True)
     snapped_points = []
-    route_distances = []
     for sg in sgs:
-        start_point = sg.start_point.transform(settings.METRICAL, clone=True)
-        route_distance = metrical_route.project(start_point)
-        snapped_point = metrical_route.interpolate(route_distance)
-        snapped_point_wgs84 = snapped_point.transform(settings.LONLAT, clone=True)
-
-        snapped_points.append(snapped_point_wgs84)
-        route_distances.append(route_distance)
-
-    return [
-        Snap(sg, snapped_point, route_distance) for sg, snapped_point, route_distance in
-        sorted(zip(sgs, snapped_points, route_distances), key=lambda x: x[2])
-    ]
+        start_point = sg.start_point.transform(settings.LONLAT, clone=True)
+        snapped_point = lonlat_route.interpolate_normalized(lonlat_route.project_normalized(start_point))
+        snapped_points.append(snapped_point)
+    return [Snap(sg, point) for sg, point in zip(sgs, snapped_points)]
 
 
 def make_waypoints(snaps: Iterable[Snap], route: LineString) -> List[dict]:
-    if snaps:
-        sgs, sg_points, sg_distances = map(list, (zip(*snaps)))
-    else:
-        sgs, sg_points, sg_distances = [], [], []
-    route_m = route.transform(settings.METRICAL, clone=True)
-    route_lonlat = route.transform(settings.LONLAT, clone=True)
+    """
+    Make waypoints with the structure:
+    {
+        "lon": float,
+        "lat": float,
+        "alt": float,
+        "distanceOnRoute": float,
+        "distanceToNextSignal": float,
+        "signalGroupId": str,
+    }
+    """
+    if not snaps and not route:
+        return []
 
-    waypoints = []
-    for (lon, lat, alt), (x, y, z) in zip(route_lonlat, route_m):
-        # Check how far the point is from the start of the route, in meters
-        point = Point(x, y, z, srid=route_m.srid)
-        distance = route_m.project(point)
+    # Throw snapped SGs and route points into a list
+    waypoints = [
+        {"lon": s.point.x, "lat": s.point.y, "alt": s.point.z, "signalGroupId": s.sg.sgmetadata.signal_group_id} 
+        for s in snaps
+    ] + [
+        {"lon": x, "lat": y, "alt": z, "signalGroupId": None} 
+        for x, y, z in route.coords
+    ]
+    
+    # Order all waypoints by the direction of the route
+    waypoints.sort(key=lambda w: route.project_normalized(Point(w["lon"], w["lat"], srid=settings.LONLAT)))
+    
+    # Use the WGS84 projection to calculate the distance between waypoints
+    geod = pyproj.Geod(ellps="WGS84")
 
-        # If we surpassed SGs, we need to add them as matches
-        # and remove them from the list of upcoming sgs
-        while sgs and sg_points and sg_distances and distance > sg_distances[0]:
-            surpassed_sg, surpassed_sg_point, _ = sgs.pop(0), sg_points.pop(0), sg_distances.pop(0)
-            waypoints.append({
-                "lon": surpassed_sg_point[0],
-                "lat": surpassed_sg_point[1],
-                "alt": surpassed_sg_point[2],
-                "distanceToNextSignal": 0,
-                "nextSignal": surpassed_sg.id,
-            })
-
-        if not sgs or not sg_points or not sg_distances:
-            # If there is no next SG, we can't match the point to any SG
-            waypoints.append({
-                "lon": lon,
-                "lat": lat,
-                "alt": alt,
-                "distanceToNextSignal": None,
-                "nextSignal": None,
-            })
-        else:
-            waypoints.append({
-                "lon": lon,
-                "lat": lat,
-                "alt": alt,
-                "distanceToNextSignal": sg_distances[0] - distance,
-                "nextSignal": sgs[0].id,
-            })
-
+    # Accumulate distances along the route
+    distance = 0
+    prev = None
+    for waypoint in waypoints:
+        if prev:
+            _, _, segment_distance = geod.inv(prev["lon"], prev["lat"], waypoint["lon"], waypoint["lat"])
+            distance += segment_distance
+        waypoint["distanceOnRoute"] = distance
+        prev = waypoint
+    
+    # Accumulate distances to the next signal. For example:
+    #     0,  10, 20, signal at 25, 30,   signal at 50, 60
+    # --> 25, 15, 5,  0,            20,   0,            None 
+    signal_waypoints = [w for w in waypoints if w["signalGroupId"]]
+    n_signals = len(signal_waypoints)
+    if signal_waypoints:
+        signal_idx = 0
+        for waypoint in waypoints:
+            if waypoint["signalGroupId"]:
+                # If we come across a signal waypoint, set the distance to 0 and switch to the next signal
+                waypoint["distanceToNextSignal"] = 0
+                signal_idx += 1
+            elif n_signals > signal_idx:
+                # When we have an upcoming signal, calculate the distance to the next signal
+                waypoint["distanceToNextSignal"] = signal_waypoints[signal_idx]["distanceOnRoute"] - waypoint["distanceOnRoute"]
+                # Annotate the waypoint with the signal group ID
+                waypoint["signalGroupId"] = signal_waypoints[signal_idx]["signalGroupId"]
+            else:
+                # Otherwise, set the distance to None
+                waypoint["distanceToNextSignal"] = None
+                # Annotate the waypoint with the signal group ID
+                waypoint["signalGroupId"] = None
+    
     return waypoints
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SGSelectionView(View):

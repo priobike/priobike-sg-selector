@@ -75,6 +75,7 @@ Results are in the following structure:
       "lat": 53.560863,
       "alt": 9.99,
       "distanceToNextSignal": 152.0200566720922,
+      "distanceOnRoute": 1234.567,
       "nextSignal": "1814"
     },
     ... [ Truncated ]
