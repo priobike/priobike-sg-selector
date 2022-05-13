@@ -1,6 +1,5 @@
 import json
 import os
-from tkinter import E
 
 from composer.models import Route, RouteSGBinding
 from django.core.management.base import BaseCommand
