@@ -44,7 +44,7 @@ class OverlapCalculationTest(TestCase):
         side_dict = calc_sides(self.mocked_sgs, self.route)
         self.assertEqual(len(side_dict), 2)
         for _, side in side_dict.items():
-            self.assertEqual(side, "left")
+            self.assertEqual(side, "no_side")
 
     def test_calc_overlaps(self):
         matcher = OverlapMatcher(overlap_pct_threshold=0.5)
