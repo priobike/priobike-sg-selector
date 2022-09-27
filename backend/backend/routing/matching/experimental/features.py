@@ -27,7 +27,7 @@ def calc_features(linestring: LineString, route: LineString, system=settings.MET
     projected_linestring = project_onto_route(system_linestring, system_route, system=system)
 
     # Features related to the bearing of the linestring
-    bearing_diffs = calc_bearing_diffs(system_linestring, projected_linestring, system=system)
+    bearing_diffs = calc_bearing_diffs(system_linestring, projected_linestring)
     if bearing_diffs:
         bearing_scale = 360
         features = np.append(features, [
@@ -66,7 +66,7 @@ def calc_features(linestring: LineString, route: LineString, system=settings.MET
     # Other features
     features = np.append(features, [
         # Feature denoting the side of the route the linestring is on
-        0 if calc_side(system_linestring, projected_linestring, system=system) == "left" else 1,
+        0 if calc_side(system_linestring, projected_linestring) == "left" else 1,
         # Feature denoting the number of segments
         len(projected_linestring.coords) - 1,
         # Features denoting the length of the linestrings

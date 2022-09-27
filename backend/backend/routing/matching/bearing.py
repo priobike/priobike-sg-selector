@@ -16,13 +16,14 @@ def get_linestring_bearing(linestring: LineString) -> float:
     The bearing is the direction the linestring is pointing in.
     The bearing is in the interval [0, 360].
     """
-    if len(linestring.coords) < 2:
+    linestring_transformed = linestring.transform(settings.LONLAT, clone=True)
+    if len(linestring_transformed.coords) < 2:
         raise ValueError("LineString must have at least 2 coordinates")
 
-    return get_bearing(*linestring.coords[0][:2], *linestring.coords[1][:2])
+    return get_bearing(*linestring_transformed.coords[0][:2], *linestring_transformed.coords[1][:2])
 
 
-def get_bearing(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+def get_bearing(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
     """
     Returns the bearing of a line between two points in the interval [0, 360].
 
@@ -38,10 +39,8 @@ def get_bearing(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
     lat1r = np.radians(lat1)
     lat2r = np.radians(lat2)
-    lon1r = np.radians(lon1)
-    lon2r = np.radians(lon2)
 
-    diffLong = np.radians(lon2r - lon1r)
+    diffLong = np.radians(lon2 - lon1)
 
     x = np.sin(diffLong) * np.cos(lat2r)
     y = np.cos(lat1r) * np.sin(lat2r) - (np.sin(lat1r)
@@ -58,13 +57,14 @@ def get_bearing(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return compass_bearing
 
 
-def calc_bearing_diffs(l1: LineString, l2: LineString, system=settings.LONLAT) -> List[float]:
+def calc_bearing_diffs(l1: LineString, l2: LineString) -> List[float]:
     """
     Calculates the bearing differences between two linestrings.
 
     The bearing differences will be in the interval [0, 360].
     """
 
+    system = settings.LONLAT
     system_l1 = l1.transform(system, clone=True)
     system_l2 = l2.transform(system, clone=True)
 
@@ -81,7 +81,7 @@ def calc_bearing_diffs(l1: LineString, l2: LineString, system=settings.LONLAT) -
     return diffs
 
 
-def calc_side(l1: LineString, l2: LineString, system=settings.METRICAL) -> str:
+def calc_side(l1: LineString, l2: LineString) -> str:
     """
     Determine if `l2` is on the right or left hand side of `l1`.
 
@@ -104,25 +104,27 @@ def calc_side(l1: LineString, l2: LineString, system=settings.METRICAL) -> str:
     if len(l1.coords) <= 1 or len(l2.coords) <= 1:
         raise ValueError("LineStrings must have at least 2 points.")
 
+    system = settings.LONLAT
     system_l1 = l1.transform(system, clone=True)
     system_l2 = l2.transform(system, clone=True)
     nearest_point_on_l2 = system_l2.interpolate(system_l2.project(system_l1.interpolate_normalized(0)))
 
-    transition_bearing = get_bearing(
-        *system_l1.coords[0][:2], 
-        *nearest_point_on_l2[:2]
-    )
-    own_bearing = get_bearing(
-        *system_l1.coords[0][:2], 
-        *system_l1.coords[1][:2]
-    )
+    transition_bearing = get_bearing(*system_l1.coords[0][:2], *nearest_point_on_l2[:2])
+    own_bearing = get_bearing(*system_l1.coords[0][:2], *system_l1.coords[1][:2])
 
-    bearing_diff = transition_bearing - own_bearing
+    bearing_diff = round(transition_bearing) - round(own_bearing)
 
     # Determine the side of the route the linestring is on
-    if bearing_diff < 0:
+    if bearing_diff > 0 and bearing_diff < 180:
+        return "right"
+    elif bearing_diff > 180 and bearing_diff < 360:
         return "left"
-    return "right"
+    elif bearing_diff < 0 and bearing_diff > -180:
+        return "left"
+    elif bearing_diff < -180 and bearing_diff > -360:
+        return "right"
+    else:
+        return "no_side"
 
 
 class BearingMatcher(ElementwiseRouteMatcher):
