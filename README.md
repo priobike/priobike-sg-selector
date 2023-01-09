@@ -191,3 +191,18 @@ The `routing`-subcomponent ([`backend/backend/routing`](backend/backend/routing)
 ## Anything unclear?
 
 Help us improving this documentation. If you have any problems or unclarities, feel free to open an issue.
+
+## Citing
+
+If you (re)use our work, please cite us:
+
+```bibtex
+@inproceedings{matthes2022matching,
+  title={Matching Traffic Lights to Routes for Real-World Deployments of Mobile GLOSA Apps},
+  author={Matthes, Philipp and Springer, Thomas},
+  booktitle={2022 IEEE International Smart Cities Conference (ISC2)},
+  pages={1--7},
+  year={2022},
+  organization={IEEE}
+}
+```
