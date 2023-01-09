@@ -1,0 +1,10 @@
+# Containers that are needed to execute tests
+services:
+  backend:
+    container_name: sg-selector-backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+      target: test
+    tty: true
+    restart: unless-stopped

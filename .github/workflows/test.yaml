@@ -1,0 +1,28 @@
+name: Run unit tests
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: 'The branch to test'
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: self-hosted
+    container: docker:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Run unit tests
+        run: |
+          docker-compose -f docker-compose.test.yml up --build -d --force-recreate
+          docker exec -w /code sg-selector-backend ls -la
+          docker exec -w /code sg-selector-backend ./wait-for-postgres.sh
+          docker exec -w /code/backend sg-selector-backend poetry run python manage.py test
+          docker-compose -f docker-compose.test.yml down -v -t 0

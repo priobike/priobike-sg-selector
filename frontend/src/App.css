@@ -1,0 +1,43 @@
+/* The sidebar menu */
+aside {
+  height: 100vh;
+  top: 0;
+  width: 16rem;
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  background-color: rgb(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.deck-gl {
+  margin-right: 16rem;
+  margin-left: 6rem;
+}
+
+.crossings-bar {
+  background-color: rgb(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  overflow-y: scroll;
+  display: 'flex';
+  justify-content: 'center';
+  flex-wrap: 'wrap';
+  list-style: 'none';
+  margin: 0;
+  z-index: 1;
+}
+
+.maps-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1;
+}

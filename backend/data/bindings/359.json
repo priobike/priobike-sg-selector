@@ -1,0 +1,35 @@
+[
+{
+  "model": "composer.routelsabinding",
+  "pk": 945,
+  "fields": {
+    "lsa": "6464",
+    "route": 359,
+    "corresponding_constellation": 7,
+    "corresponding_route_error": 4,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 946,
+  "fields": {
+    "lsa": "6499",
+    "route": 359,
+    "corresponding_constellation": 2,
+    "corresponding_route_error": 4,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 947,
+  "fields": {
+    "lsa": "7478",
+    "route": 359,
+    "corresponding_constellation": 2,
+    "corresponding_route_error": 2,
+    "confirmed": false
+  }
+}
+]

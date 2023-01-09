@@ -1,0 +1,79 @@
+[
+{
+  "model": "composer.routelsabinding",
+  "pk": 1821,
+  "fields": {
+    "lsa": "5300",
+    "route": 116,
+    "corresponding_constellation": 8,
+    "corresponding_route_error": 3,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 1822,
+  "fields": {
+    "lsa": "7324",
+    "route": 116,
+    "corresponding_constellation": 1,
+    "corresponding_route_error": 4,
+    "confirmed": true
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 1823,
+  "fields": {
+    "lsa": "7347",
+    "route": 116,
+    "corresponding_constellation": 8,
+    "corresponding_route_error": 4,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 1824,
+  "fields": {
+    "lsa": "8507",
+    "route": 116,
+    "corresponding_constellation": 2,
+    "corresponding_route_error": 2,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 1825,
+  "fields": {
+    "lsa": "8514",
+    "route": 116,
+    "corresponding_constellation": 2,
+    "corresponding_route_error": 2,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 1826,
+  "fields": {
+    "lsa": "10047",
+    "route": 116,
+    "corresponding_constellation": 8,
+    "corresponding_route_error": 3,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 1827,
+  "fields": {
+    "lsa": "10100",
+    "route": 116,
+    "corresponding_constellation": 2,
+    "corresponding_route_error": null,
+    "confirmed": true
+  }
+}
+]

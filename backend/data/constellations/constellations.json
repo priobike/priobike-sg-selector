@@ -1,0 +1,82 @@
+[
+    {
+        "model": "composer.constellation",
+        "pk": 1,
+        "fields": {
+            "id": 1,
+            "name": "Geraudeaus, fast identisch",
+            "description": "MAP-Topologie bei keiner Abbiegung (Geradeaus bei Kreuzung, Fußgänger- oder Baustellen-LSA). MAP-Topologie und Route verlaufen fast identisch.",
+            "custom_id": "1a"
+        }
+    },
+    {
+        "model": "composer.constellation",
+        "pk": 2,
+        "fields": {
+            "id": 2,
+            "name": "Geraudeaus, leichter Versatz",
+            "description": "MAP-Topologie bei keiner Abbiegung (Geradeaus bei Kreuzung, Fußgänger- oder Baustellen-LSA). MAP-Topologie und Route verlaufen parallel mit einem gewissen Versatz",
+            "custom_id": "1b"
+        }
+    },
+    {
+        "model": "composer.constellation",
+        "pk": 3,
+        "fields": {
+            "id": 3,
+            "name": "Geraudeaus, konvergent",
+            "description": "MAP-Topologie bei keiner Abbiegung (Geradeaus bei Kreuzung, Fußgänger- oder Baustellen-LSA). MAP-Topologie und Route verlaufen konvergent.",
+            "custom_id": "1c1"
+        }
+    },
+    {
+        "model": "composer.constellation",
+        "pk": 4,
+        "fields": {
+            "id": 4,
+            "name": "Geraudeaus, divergent",
+            "description": "MAP-Topologie bei keiner Abbiegung (Geradeaus bei Kreuzung, Fußgänger- oder Baustellen-LSA). MAP-Topologie und Route verlaufen divergent.",
+            "custom_id": "1c2"
+        }
+    },
+    {
+        "model": "composer.constellation",
+        "pk": 5,
+        "fields": {
+            "id": 5,
+            "name": "Abbiegung, Kurven-Inneren",
+            "description": "MAP-Topologie bei Abbiegung. MAP-Topologie verläuft im Kurven-Inneren.",
+            "custom_id": "2a"
+        }
+    },
+    {
+        "model": "composer.constellation",
+        "pk": 6,
+        "fields": {
+            "id": 6,
+            "name": "Abbiegung, Schneidet Route",
+            "description": "MAP-Topologie bei Abbiegung. MAP-Topologie schneidet Route.",
+            "custom_id": "2b"
+        }
+    },
+    {
+        "model": "composer.constellation",
+        "pk": 7,
+        "fields": {
+            "id": 7,
+            "name": "Abbiegung, Verläuft weiter geradeaus",
+            "description": "MAP-Topologie bei Abbiegung. MAP-Topologie verläuft gerade über die Route hinaus.",
+            "custom_id": "2c"
+        }
+    },
+    {
+        "model": "composer.constellation",
+        "pk": 8,
+        "fields": {
+            "id": 8,
+            "name": "Abbiegung, Verläuft weiter geradeaus + Versatz",
+            "description": "MAP-Topologie bei Abbiegung. MAP-Topologie verläuft gerade über die Route hinaus + Versatz.",
+            "custom_id": "2d"
+        }
+    }
+]

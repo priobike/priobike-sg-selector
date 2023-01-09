@@ -1,0 +1,46 @@
+[
+{
+  "model": "composer.routelsabinding",
+  "pk": 893,
+  "fields": {
+    "lsa": "3433",
+    "route": 5,
+    "corresponding_constellation": 4,
+    "corresponding_route_error": 2,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 894,
+  "fields": {
+    "lsa": "4251",
+    "route": 5,
+    "corresponding_constellation": 2,
+    "corresponding_route_error": 3,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 895,
+  "fields": {
+    "lsa": "4253",
+    "route": 5,
+    "corresponding_constellation": 8,
+    "corresponding_route_error": 3,
+    "confirmed": false
+  }
+},
+{
+  "model": "composer.routelsabinding",
+  "pk": 896,
+  "fields": {
+    "lsa": "4663",
+    "route": 5,
+    "corresponding_constellation": 3,
+    "corresponding_route_error": 2,
+    "confirmed": false
+  }
+}
+]

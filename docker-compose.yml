@@ -1,0 +1,39 @@
+services:
+  backend:
+    container_name: sg-selector-backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./backend:/code
+    networks:
+      - network
+    ports:
+      - "8000:8000"
+    command: ./run-dev.sh
+    restart: unless-stopped
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    volumes:
+      - ./frontend:/code
+    networks:
+      - network
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_BACKEND_PORT=8000
+    depends_on:
+      - backend   
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        cd code
+        yarn install
+        yarn start
+
+networks:
+  network:

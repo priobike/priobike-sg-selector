@@ -1,0 +1,74 @@
+name: Create and publish Docker image
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        description: 'The Docker registry'
+        required: true
+        type: string
+      image:
+        description: 'The Docker image name'
+        required: true
+        type: string
+      branch:
+        description: 'The branch to build'
+        required: true
+        type: string
+      api:
+        description: 'The FROST api for database prewarming'
+        required: true
+        type: string
+      filter:
+        description: 'The FROST api filter for database prewarming'
+        required: true
+        type: string
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME:
+        description: 'Username for the Nexus Docker registry'
+        required: true
+      NEXUS_DOCKER_PUB_PASSWORD:
+        description: 'Password for the Nexus Docker registry'
+        required: true
+
+jobs:
+  publish:
+    runs-on: self-hosted
+    container: docker:latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Log in to the container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+          password: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        # See: https://github.com/docker/metadata-action
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ inputs.registry }}/${{ inputs.image }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          target: production # Preheat database to be immediately ready for production
+          build-args: |
+            FROST_API=${{ inputs.api }}
+            FROST_FILTER=${{ inputs.filter }}
+            CACHE_DATE=${{ github.event.repository.updated_at }}-${{ github.run_id }}-${{ github.run_attempt }}

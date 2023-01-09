@@ -1,0 +1,42 @@
+[
+    {
+        "model": "composer.routeerror",
+        "pk": 1,
+        "fields": {
+            "id": 1,
+            "name": "Routing auf Straße und nicht auf Radwegen",
+            "description": "Routing auf der Straße, keine Nutzung bestehender Radwege. Routenverlauf bleibt bis auf einen Versatz prinzipiell gleich. Z.B. bei parallel verlaufenden Straßen und Radwegen wird die Straße im Gegensatz zum Radweg gewählt",
+            "custom_id": "1a"
+        }
+    },
+    {
+        "model": "composer.routeerror",
+        "pk": 2,
+        "fields": {
+            "id": 2,
+            "name": "Kreuzung-Geradeaus: Routing auf Straße und nicht Radwegefurt",
+            "description": "Kreuzungsüberquerung über KFZ Spur, obwohl Wegführung für Radfahrer separiert erfolgt. Damit häufig keine Überquerung der Radwegefurt. Beim Geradeaus-Überqueren nur Versatz, darüber hinaus keine größeren Abweichungen, ähnlich zu (1.a).",
+            "custom_id": "2a"
+        }
+    },
+    {
+        "model": "composer.routeerror",
+        "pk": 3,
+        "fields": {
+            "id": 3,
+            "name": "Kreuzung-Abbiegen: Routing auf Straße und nicht Radwegefurt",
+            "description": "Kreuzungsüberquerung über KFZ Spur, obwohl Wegführung für Radfahrer separiert erfolgt. Damit häufig keine Überquerung der Radwegefurt. Beim Abbiegen teils große Abweichungen in Richtung und Versatz.",
+            "custom_id": "2b"
+        }
+    },
+    {
+        "model": "composer.routeerror",
+        "pk": 4,
+        "fields": {
+            "id": 4,
+            "name": "Fußweg/Radweg falsche Seite",
+            "description": "Nutzung des Fußweges auf der falschen Straßenseite.",
+            "custom_id": "3"
+        }
+    }
+]

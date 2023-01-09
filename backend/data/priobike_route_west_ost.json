@@ -1,0 +1,160 @@
+{
+  "route": [
+    {
+      "lon": 9.977496,
+      "lat": 53.56415,
+      "alt": 20.4,
+      "distanceToNextSignal": 299.6474384151647,
+      "signalGroupId": "hamburg/413_3"
+    },
+    {
+      "lon": 9.977694,
+      "lat": 53.564157,
+      "alt": 20.13,
+      "distanceToNextSignal": 286.54814463920536,
+      "signalGroupId": "hamburg/413_3"
+    },
+    {
+      "lon": 9.979559,
+      "lat": 53.564095,
+      "alt": 20.27,
+      "distanceToNextSignal": 163.18852476522105,
+      "signalGroupId": "hamburg/413_3"
+    },
+    {
+      "lon": 9.98203,
+      "lat": 53.564091,
+      "alt": 20.27,
+      "distanceToNextSignal": 0,
+      "signalGroupId": "hamburg/413_3"
+    },
+    {
+      "lon": 9.983017,
+      "lat": 53.564072,
+      "alt": 17.69,
+      "distanceToNextSignal": 430.9801056319608,
+      "signalGroupId": "hamburg/2150_8"
+    },
+    {
+      "lon": 9.98331,
+      "lat": 53.564056,
+      "alt": 17.75,
+      "distanceToNextSignal": 411.5483900954046,
+      "signalGroupId": "hamburg/2150_8"
+    },
+    {
+      "lon": 9.983992,
+      "lat": 53.563974,
+      "alt": 18.53,
+      "distanceToNextSignal": 365.59451759326254,
+      "signalGroupId": "hamburg/2150_8"
+    },
+    {
+      "lon": 9.984613,
+      "lat": 53.563849,
+      "alt": 18.71,
+      "distanceToNextSignal": 322.2914084201033,
+      "signalGroupId": "hamburg/2150_8"
+    },
+    {
+      "lon": 9.985106,
+      "lat": 53.563672,
+      "alt": 18.63,
+      "distanceToNextSignal": 284.24639145881486,
+      "signalGroupId": "hamburg/2150_8"
+    },
+    {
+      "lon": 9.985493,
+      "lat": 53.563507,
+      "alt": 18.5,
+      "distanceToNextSignal": 252.78461516209788,
+      "signalGroupId": "hamburg/2150_8"
+    },
+    {
+      "lon": 9.988394,
+      "lat": 53.562024,
+      "alt": 14.5,
+      "distanceToNextSignal": 0,
+      "signalGroupId": "hamburg/2150_8"
+    },
+    {
+      "lon": 9.989212,
+      "lat": 53.56159,
+      "alt": 11.95,
+      "distanceToNextSignal": 13.881497196292722,
+      "signalGroupId": "hamburg/271_1"
+    },
+    {
+      "lon": 9.989369,
+      "lat": 53.561507,
+      "alt": 11.95,
+      "distanceToNextSignal": 0,
+      "signalGroupId": "hamburg/271_1"
+    },
+    {
+      "lon": 9.989406,
+      "lat": 53.56146,
+      "alt": 11.07,
+      "distanceToNextSignal": null,
+      "signalGroupId": null
+    },
+    {
+      "lon": 9.98951,
+      "lat": 53.561515,
+      "alt": 11.17,
+      "distanceToNextSignal": null,
+      "signalGroupId": null
+    },
+    {
+      "lon": 9.99005,
+      "lat": 53.56104,
+      "alt": 11.41,
+      "distanceToNextSignal": null,
+      "signalGroupId": null
+    },
+    {
+      "lon": 9.989899,
+      "lat": 53.560973,
+      "alt": 11.67,
+      "distanceToNextSignal": null,
+      "signalGroupId": null
+    },
+    {
+      "lon": 9.990059,
+      "lat": 53.560791,
+      "alt": 11.6,
+      "distanceToNextSignal": null,
+      "signalGroupId": null
+    }
+  ],
+  "distance": 995.966,
+  "ascend": 2.25,
+  "descend": 11.04,
+  "time": 217923,
+  "signalgroups": {
+    "hamburg/413_3": {
+      "label": "An der Verbindungsbahn/Bundesstr. (413_3)",
+      "position": {
+        "lon": 9.98203,
+        "lat": 53.564091
+      },
+      "id": "hamburg/413_3"
+    },
+    "hamburg/2150_8": {
+      "label": "FLSA Edmund-Siemers-Allee (2150_8)",
+      "position": {
+        "lon": 9.988394,
+        "lat": 53.562024
+      },
+      "id": "hamburg/2150_8"
+    },
+    "hamburg/271_1": {
+      "label": "Theodor-Heuss-Platz (271_1)",
+      "position": {
+        "lon": 9.989369,
+        "lat": 53.561507
+      },
+      "id": "hamburg/271_1"
+    }
+  }
+}

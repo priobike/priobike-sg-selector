@@ -1,0 +1,63 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yaml
+    with: 
+      branch: ${{ github.ref }}
+
+  publish-hamburg-master:
+    needs: test
+    uses: ./.github/workflows/publish.yaml
+    with:
+      registry: bikenow.vkw.tu-dresden.de
+      image: ${{ github.repository }}-hamburg
+      branch: master
+      api: https://tld.iot.hamburg.de/v1.1
+      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+      NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
+
+  publish-sachsen-master:
+    needs: test
+    uses: ./.github/workflows/publish.yaml
+    with:
+      registry: bikenow.vkw.tu-dresden.de
+      image: ${{ github.repository }}-sachsen
+      branch: master
+      api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
+      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+      NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
+
+  publish-hamburg-stable:
+    needs: test
+    uses: ./.github/workflows/publish.yaml
+    with:
+      registry: bikenow.vkw.tu-dresden.de
+      image: ${{ github.repository }}-hamburg
+      branch: stable
+      api: https://tld.iot.hamburg.de/v1.1
+      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+      NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
+
+  publish-sachsen-stable:
+    needs: test
+    uses: ./.github/workflows/publish.yaml
+    with:
+      registry: bikenow.vkw.tu-dresden.de
+      image: ${{ github.repository }}-sachsen
+      branch: stable
+      api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
+      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+      NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
