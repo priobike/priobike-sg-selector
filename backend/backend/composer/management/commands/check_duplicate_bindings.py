@@ -55,7 +55,7 @@ class Command(BaseCommand):
                         test += 1
 
                 if test > 1:
-                    print("FAIL 2")
+                    print("This shouldn't happen but is a print for debug reasions.")
 
             # If it is no duplicate add it as a original binding
             if not duplicate:

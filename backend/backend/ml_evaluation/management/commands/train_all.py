@@ -11,10 +11,8 @@ from routing.matching.ml.features.feature_point_distances import PointDistances
 from routing.matching.ml.features.feature_bearing_diffs import BearingDiffs
 import numpy as np
 from django.core.management.base import BaseCommand
-from imblearn.under_sampling import RandomUnderSampler
-from sklearn.model_selection import train_test_split, StratifiedKFold, StratifiedShuffleSplit
+from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix, f1_score
-from sklearn.utils import shuffle
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, PowerTransformer
 from django.conf import settings
 from ml_evaluation.configs.classifiers import classifiers
@@ -133,20 +131,7 @@ class Command(BaseCommand):
         constellations = dataset["constellations"]
         route_errors = dataset["route_errors"]
 
-        # Since we augmented the dataset with artificial samples, we need to
-        # use a non-shuffled train test split
         random_state = 123            
-        """ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, shuffle=config_train[config_train_id]["shuffle"], random_state=random_state)
-        
-        # Used for analysis:
-        constellations_train, constellations_test, route_errors_train, route_errors_test = train_test_split(constellations, route_errors, test_size=0.25, shuffle=config_train[config_train_id]["shuffle"], random_state=random_state)
-        
-        if config_train[config_train_id]["undersample"]:
-            # Undersample the majority class to balance the dataset
-            X_train, y_train = RandomUnderSampler().fit_resample(X_train, y_train)
-
-        print(f"Train dataset size: {np.bincount(y_train)}")
-        print(f"Test dataset size: {np.bincount(y_test)}") """
 
         best_f1 = 0
         best_model = None
@@ -225,14 +210,6 @@ class Command(BaseCommand):
             fp = np.mean(np.array(all_fps))
             fn = np.mean(np.array(all_fns))
             tp = np.mean(np.array(all_tps))
-            
-            """ clf.fit(X_train, y_train)
-            
-            train_f1 = f1_score(y_train, clf.predict(X_train))
-            test_f1 = f1_score(y_test, clf.predict(X_test))
-            train_acc = clf.score(X_train, y_train)
-            test_acc = clf.score(X_test, y_test)
-            tn, fp, fn, tp = confusion_matrix(y_test, clf.predict(X_test)).ravel() """
             
             train_constellations_right = {}
             train_constellations_false = {}

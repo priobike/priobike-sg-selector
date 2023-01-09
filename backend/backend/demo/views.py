@@ -23,8 +23,6 @@ def cross_origin(response):
 class SignalgroupsResource(View):
     def get(self, request):
         sgs = LSA.objects.all()
-        """ geojson = serialize("geojson", list(sgs), geometry_field="geometry")
-        return cross_origin(HttpResponse(geojson, content_type="application/json")) """
         
         ids = [lsa.id for lsa in sgs]
 
@@ -69,7 +67,12 @@ class MatchesResource(View):
         for point in route.geometry:
             body["route"].append({"lon": point[0], "lat": point[1], "alt": 0})
             
-        r = requests.post(f'http://localhost:8000/routing/select?matcher=ml', json=body)
+        params = request.GET
+        matcher = str(params.get("matcher", "legacy"))
+        
+        print(">>>>>>>>>>>>>>>>>>> Used matcher for demo: " + matcher)
+                
+        r = requests.post(f'http://localhost:8000/routing/select?matcher={matcher}', json=body)
         ids = [sg.replace("hamburg/", "") for sg in r.json()["signalGroups"]]        
 
         """ geojson = serialize("geojson", matches, geometry_field="geometry") """

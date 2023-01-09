@@ -189,6 +189,7 @@ class RouteStreets(FeatureExtractor):
             featureExtractionState.features = np.append(
                 featureExtractionState.features, [0, 1])
         else:
+            # For debugging:
             """ if len(response.json()["paths"]) > 1:
                 print(f'Route_id: {route.id}, LSA_id: {lsa.id} - Größer eins') """
 
@@ -200,10 +201,12 @@ class RouteStreets(FeatureExtractor):
                 initial_street_name = response_street_details[0][2]
                 for street in response_street_details:
                     if street[2] != initial_street_name:
+                        # For debugging:
                         """ print(f'{initial_street_name} -> {street[2]}') """
                         street_changed = True
                         break
-
+            
+            # For debugging:
             """ if street_changed:
                 print(f'Route_id: {route.id}, LSA_id: {lsa.id} - Success \n') """
 

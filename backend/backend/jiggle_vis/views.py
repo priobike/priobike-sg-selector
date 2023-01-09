@@ -101,7 +101,7 @@ class BindingsConnectionsResource(View):
             for i in range(number_of_jiggled_lsas):
                 lsa_jiggle = deepcopy(lsa)
                 lsa_jiggle.geometry = jiggle_linestring(geos_linestring=lsa_jiggle.geometry,
-                                                        rotation_lower_bound=rotation_lower_bound, rotations_upper_bound=rotations_upper_bound,
+                                                        rotation_lower_bound=rotation_lower_bound, rotations_upper_bound=rotation_upper_bound,
                                                         scale_lower_bound=scale_lower_bound, scale_upper_bound=scale_upper_bound,
                                                         translation_x_lower_bound=translation_x_lower_bound, translation_x_upper_bound=translation_x_upper_bound,
                                                         translation_y_lower_bound=translation_y_lower_bound, translation_y_upper_bound=translation_y_upper_bound)

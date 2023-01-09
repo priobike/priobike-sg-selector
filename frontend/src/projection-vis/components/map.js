@@ -28,8 +28,6 @@ export default class LSAMap extends React.Component {
         width: window.innerWidth,
         height: window.innerHeight,
       }),
-      /* selectedLSAs: props.selectedLSAs,
-      confirmedLSAs: props.confirmedLSAs */
     };
 
     // Create a deck gl ref and bind the onClick listener
@@ -56,19 +54,6 @@ export default class LSAMap extends React.Component {
       };
     });
   };
-
-  /* componentDidUpdate(prevProps) {
-    if (prevProps.selectedLSAs !== this.props.selectedLSAs) {
-      this.setState({
-        selectedLSAs: this.props.selectedLSAs
-      });
-    }
-    if (prevProps.confirmedLSAs !== this.props.confirmedLSAs) {
-      this.setState({
-        confirmedLSAs: this.props.confirmedLSAs
-      });
-    }
-  } */
 
   animate = () => {
     const step = 0.5;
@@ -103,7 +88,6 @@ export default class LSAMap extends React.Component {
   render() {
     const layers = [
       new RouteLayer(),
-      /* new RouteDirectionLayer({ currentTime: this.state.animationProgress }), */
       new LSAsLayer({
         data: this.props.LSAs,
         getLineColor: d => {
@@ -128,7 +112,6 @@ export default class LSAMap extends React.Component {
           return [0, 0, 0];
         }
       }),
-      /* new LSAsDirectionLayer({ currentTime: this.state.animationProgress }), */
     ];
 
     return (

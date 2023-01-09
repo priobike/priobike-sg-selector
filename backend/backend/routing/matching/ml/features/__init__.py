@@ -107,15 +107,15 @@ def get_features(lsa: LSA, route_linestring: LineString, config):
         system_lsa_linestring = remove_duplicate_coordinates(
             system_lsa_linestring)
 
-    # Error check whether after removing duplicate coordinates there are still duplicate coordinates
-    for coordinate in system_lsa_linestring.coords:
+    # Error check whether after removing duplicate coordinates there are still duplicate coordinates (for debugging)
+    """ for coordinate in system_lsa_linestring.coords:
         count = 0
         for coordinate2 in system_lsa_linestring.coords:
             if coordinate == coordinate2:
                 count += 1
                 if count > 2:
                     raise Exception(
-                        f"Error! Still duplicates in LSA after removing duplicates: {lsa.id} (eg in route {route.id})")
+                        f"Error! Still duplicates in LSA after removing duplicates: {lsa.id} (eg in route {route.id})") """
 
     # For analyzing the timings of the diffeernt projection methods:
     normal_projection_start = time.time()
@@ -127,6 +127,7 @@ def get_features(lsa: LSA, route_linestring: LineString, config):
     elif config["projection_method"] == "old":
         projected_lsa_linestring = project_onto_route(
             system_lsa_linestring, system_route_linestring)
+        # Can be used for debugging: 
         """ if not projected_lsa_linestring.equals_exact(projected_lsa_linestring_test, tolerance=0.00000001):
             print(f"-------------------------------------------------------1.1------Route-{route.id}-LSA-{lsa.id}-------------------------------------------------")
             print(projected_lsa_linestring)

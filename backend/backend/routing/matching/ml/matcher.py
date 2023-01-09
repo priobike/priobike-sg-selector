@@ -11,6 +11,7 @@ from routing.matching.ml.features import get_features
 from routing.matching.ml.configs_production.trainings import config_train
 from routing.matching.ml.configs_production.datasets import config_data_and_features
 from routing.matching.ml.path_configs import models_production_path, models_evaluation_path
+from routing.matching.overlap import OverlapMatcher, calc_sections
 
 
 class MLMatcher(RouteMatcher):
@@ -88,6 +89,7 @@ class MLMatcher(RouteMatcher):
                 print("Yeo Johnson power transformer model does not exist!")
         else:
             self.transformer = None
+            
 
     def matches(self, lsas: QuerySet, route: LineString) -> Tuple[QuerySet, LineString]:
         """
@@ -132,7 +134,38 @@ class MLMatcher(RouteMatcher):
 
         # Perform the matching.
         y = self.clf.predict(X)
-        pks_to_include = [lsa.pk for lsa,
-                        prediction in zip(lsas, y) if prediction]
+        
+        # Don't perform overlap matching if no MLP is used (probabilites required for the overlap matching)
+        # Also overlap matching won't need to be performed if no or only one MAP topology got matched ("y.count(1) < 2")
+        if (self.model_name != "MLP") or np.count_nonzero(y == 1) < 2:
+            pks_to_include = [lsa.pk for lsa, prediction in zip(lsas, y) if prediction]
+            return lsas.filter(pk__in=pks_to_include), route
 
-        return lsas.filter(pk__in=pks_to_include), route
+        y_prob = self.clf.predict_proba(X)
+
+        pks_to_include, probabilities_of_pks_to_include = zip(*[(lsa.pk, probability) for lsa, prediction, probability
+                                                                in zip(lsas, y, y_prob) if prediction])
+
+        lsas = lsas.filter(pk__in=pks_to_include)
+
+        # Perform overlap matching
+        if (self.model_name == "MLP"):
+            sections = calc_sections(lsas, route)
+            overlapMatcher = OverlapMatcher(
+                58.97414602358541,
+                49.990248909428296,
+                0
+            )
+            overlaps = overlapMatcher.calc_overlaps(sections)
+
+            excluded_lsas = set()
+            for lsa_id_1, lsa_id_2 in overlaps:
+                if probabilities_of_pks_to_include[pks_to_include.index(lsa_id_1)][1] >  \
+                        probabilities_of_pks_to_include[pks_to_include.index(lsa_id_2)][1]:
+                    excluded_lsas.add(lsa_id_2)
+                else:
+                    excluded_lsas.add(lsa_id_1)
+
+            lsas = lsas.exclude(id__in=excluded_lsas)
+
+        return lsas, route

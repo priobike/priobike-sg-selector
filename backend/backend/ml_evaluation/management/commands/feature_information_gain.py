@@ -75,8 +75,5 @@ class Command(BaseCommand):
         plt.yticks(range(len(indices)), [
                    latex_feature_names[i] for i in indices])
 
-        """ feat_importances = pd.Series(importances, data.columns[0:len(data.columns) - 1])
-        feat_importances.plot(kind='barh', color = 'g') """
-
         plt.savefig(os.path.join(settings.BASE_DIR, f"../backend/ml_evaluation/logs/feature_information_gain/features_information_gain_plot_config_data_and_features_id_{str(config_data_and_features_id)}.pdf"),
                     format="pdf", bbox_inches="tight")

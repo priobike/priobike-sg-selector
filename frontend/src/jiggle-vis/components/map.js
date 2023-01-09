@@ -28,8 +28,6 @@ export default class LSAMap extends React.Component {
         width: window.innerWidth,
         height: window.innerHeight,
       }),
-      /* selectedLSAs: props.selectedLSAs,
-      confirmedLSAs: props.confirmedLSAs */
     };
 
     // Create a deck gl ref and bind the onClick listener

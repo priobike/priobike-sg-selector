@@ -11,9 +11,7 @@ class LSAsLayer extends GeoJsonLayer {
       id: 'lsas',
       data: props.data,
       lineWidthMinPixels: 8,
-      /* pickable: true, */
       lineCapRounded: true,
-      /* autoHighlight: true, */
       highlightColor: [255, 255, 255, 255],
       getLineColor: [0, 255, 0],
       opacity: 1,

@@ -209,8 +209,6 @@ class Command(BaseCommand):
                     lsa_geometry = lsa.geometry.transform(
                         settings.METRICAL, clone=True)
                     augmented_geometries = [lsa_geometry]
-                    """ for _ in range(N_AUGMENTED_SAMPLES_PER_SAMPLE):
-                        augmented_geometries.append(jiggle_linestring(lsa_geometry)) """
 
                     for replica_idx, geometry in enumerate(augmented_geometries):
                         _id = f"{route.id}_{lsa.id}_{replica_idx}"

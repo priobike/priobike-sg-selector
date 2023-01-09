@@ -63,9 +63,6 @@ class Command(BaseCommand):
                 reduced_X.append(dataset["X"][index])
                 reduced_constellations.append(
                     self.get_constellation_custom_id(dataset["constellations"][index]))
-                """ reduced_constellations.append("Geradeaus" if "Geraudeaus" in dataset["constellations"][index]
-                                              else "Abbiegung, Verläuft weiter geradeaus" if "Abbiegung, Verläuft weiter geradeaus" in dataset["constellations"][index]
-                                                else "Abbiegung") """
                 route_error_id = self.get_route_error_custom_id(
                     dataset["route_errors"][index])
                 reduced_route_errors.append(

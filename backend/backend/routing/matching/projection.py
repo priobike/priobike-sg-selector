@@ -247,7 +247,6 @@ def get_extended_projected_linestring(lsa_linestring: LineString, route_linestri
     point_after_index = point_before_index + 1
     point_after = system_route_linestring.coords[point_after_index]
 
-    """ max_distance = system_lsa_linestring.length / 2 """
     max_distance = 0.0004
     # Get route section before center:
     points_before = [point_before]

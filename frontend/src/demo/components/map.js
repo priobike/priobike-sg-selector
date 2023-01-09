@@ -11,6 +11,7 @@ import { Button } from "@mui/material";
 const domain = window.location.protocol + '//' + window.location.hostname;
 const port = process.env.REACT_APP_BACKEND_PORT;
 const routeId = new URLSearchParams(window.location.search).get('route_id');
+const matcher = new URLSearchParams(window.location.search).get('matcher');
 
 const tooltipSource = new LSATooltipSource();
 
@@ -31,8 +32,6 @@ export default class LSAMap extends React.Component {
         height: window.innerHeight,
       }),
       route: undefined
-      /* selectedLSAs: props.selectedLSAs,
-      confirmedLSAs: props.confirmedLSAs */
     };
 
     // Create a deck gl ref and bind the onClick listener
@@ -92,7 +91,7 @@ export default class LSAMap extends React.Component {
 
   matchSignalgroups = () => {
     // Fetch the matches from the server
-    fetch(`${domain}:${port}/demo/api/route/${routeId}/matches`)
+    fetch(`${domain}:${port}/demo/api/route/${routeId}/matches${matcher ? "?matcher=" + matcher : ""}`)
     .then(res => res.json())
     .then(res => {
       this.setState({
@@ -111,11 +110,11 @@ export default class LSAMap extends React.Component {
           if (this.state.matches !== undefined) {
             for (const lsa of this.state.matches) {
               if (lsa == d.properties.lsa) {
-                return [252, 136, 3];
+                return [0, 255, 0];
               }
             }
           }
-          return [0, 195, 255];
+          return [255, 0, 0];
         },
         updateTriggers: {
           getLineColor: [this.state.matches]
