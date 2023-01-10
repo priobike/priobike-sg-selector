@@ -6,6 +6,7 @@ import LSAList from './list';
 const domain = window.location.protocol + '//' + window.location.hostname;
 const routeId = new URLSearchParams(window.location.search).get('route_id');
 const port = process.env.REACT_APP_BACKEND_PORT;
+const mapData = new URLSearchParams(window.location.search).get('map_data');
 
 export default class LSASidebar extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ export default class LSASidebar extends React.Component {
 
     this.setState({ blockSubmitting: true });
 
-    await fetch(`${domain}:${port}/composer/api/route/${routeId}/bindings`, {
+    await fetch(`${domain}:${port}/composer/api/route/${routeId}/bindings${mapData ? "?map_data=" + mapData : ""}`, {
       method: 'POST',
       body: JSON.stringify(selectedLSAs)
     });
@@ -93,7 +94,7 @@ export default class LSASidebar extends React.Component {
             variant="contained"
             onClick={() => this.submitRouteBindings()}
             color="primary">
-            Submit Route Bindings
+            Submit Route Bindings ({mapData ? mapData : "osm"})
           </Button>
           <Button
             disabled={blockSubmitting}

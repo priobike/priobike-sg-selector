@@ -48,7 +48,7 @@ class Command(BaseCommand):
                 lsa_linestring_projected = project_onto_route(
                     lsa_linestring, route_linestring)
 
-                if check_binding_exists(lsa_linestring_projected, all_bindings):
+                if check_binding_exists(lsa_linestring_projected, lsa.id, all_bindings):
                     duplicates = True
                     break
 

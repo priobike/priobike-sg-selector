@@ -80,7 +80,7 @@ class RouteBindingResource(View):
             lsa_linestring_projected = project_onto_route(
                 lsa_linestring, route_linestring)
 
-            if not show_duplicates and check_binding_exists(lsa_linestring_projected, all_bindings):
+            if not show_duplicates and check_binding_exists(lsa_linestring_projected, m.id, all_bindings):
                 duplicates = True
             response[m.id] = {
                 "confirmed": False,
@@ -88,10 +88,17 @@ class RouteBindingResource(View):
                 "corresponding_route_error": None
             }
 
+        # Return empty dict, if no duplicates should be shown (show_duplicates == false) and at least one duplicate got found found (duplicates == true).
+        # Returning an empty dict indicates in that case that we don't want to use this route for further bindings because we decided that we don't want duplicates and
+        # therefore we can save the work to create bindings for that route that in the ende wouldn't get used anyway.
         return cross_origin(JsonResponse(response if show_duplicates or not duplicates else {}, safe=False))
 
     def post(self, request, route_id, *args, **kwargs):
         route = get_object_or_404(Route, pk=route_id)
+        
+        # Depending on this Query parameters the directory to save the bindings gets chosen. 
+        params = request.GET
+        map_data = str(params.get("map_data", "osm"))
 
         payload = json.loads(request.body)
         print(payload)
@@ -101,15 +108,21 @@ class RouteBindingResource(View):
                                     corresponding_constellation_id=values[
                                         "corresponding_constellation"] if "corresponding_constellation" in values else None,
                                     corresponding_route_error_id=values["corresponding_route_error"] if "corresponding_route_error" in values else None) for lsa_id, values in payload.items()]
+        
+        # Dump the bindings    
+        if map_data == "osm":
+            with open(f"../data/bindings/{route.id}.json", "w") as f:
+                f.write(serialize("json", bindings, indent=2))
+        elif map_data == "drn":
+            with open(f"../data/bindings_drn/{route.id}.json", "w") as f:
+                f.write(serialize("json", bindings, indent=2))
+        else:
+            return JsonResponse({"error": "Unsupported value provided for the parameter 'map_data'. Choose between 'osm' or 'drn'."})
 
-        # Update the bindings
+        # Update the bindings in the database
         with transaction.atomic():
             RouteLSABinding.objects.filter(route=route).delete()
             RouteLSABinding.objects.bulk_create(bindings)
-
-        # Dump the bindings
-        with open(f"data/bindings/{route.id}.json", "w") as f:
-            f.write(serialize("json", bindings, indent=2))
 
         return cross_origin(JsonResponse({"success": True}))
 
@@ -144,7 +157,7 @@ class ConnectionsResource(View):
                 settings.LONLAT, clone=True)
             lsa_linestring_projected = project_onto_route(
                 lsa_linestring, route_linestring)
-            if check_binding_exists(lsa_linestring_projected, all_bindings):
+            if check_binding_exists(lsa_linestring_projected, connection.lsa.id, all_bindings):
                 duplicates = True
                 break
 
@@ -199,7 +212,7 @@ class RouteSegmentsResource(View):
                 point = Point(*coord, srid=route.geometry.srid)
                 current_distance += last_point.distance(
                     point) if last_point is not None else 0
-                progress = int((current_distance / total_distance) * 100)
+                progress = int((current_distance / total_distance) * 100) if total_distance > 0 else 0
                 waypoints.append({
                     "coordinates": [*coord],
                     "progress": progress
@@ -327,10 +340,19 @@ class RouteErrorAllResource(View):
 class HealthCheckBindingFiles(View):
     def get(self, request):
         bindings_database = RouteLSABinding.objects.all()
+        
+        params = request.GET
+        map_data = str(params.get("map_data", "osm"))
 
         error_bindings = []
+        
+        if map_data == "osm":
+            bindings_dir = "../data/bindings/"
+        elif map_data == "drn":
+            bindings_dir = "../data/bindings_drn/"
+        else:
+            return JsonResponse({"error": "Unsupported value provided for the parameter 'map_data'. Choose between 'osm' or 'drn'."})
 
-        bindings_dir = "data/bindings/"
         files = [f for f in os.listdir(bindings_dir) if os.path.isfile(
             os.path.join(bindings_dir, f))]
 
@@ -364,10 +386,19 @@ class HealthCheckBindingFiles(View):
 class HealthCheckBindingsDatabase(View):
     def get(self, request):
         bindings_database = RouteLSABinding.objects.all()
+        
+        params = request.GET
+        map_data = str(params.get("map_data", "osm"))
 
         error_bindings = []
 
-        bindings_dir = "data/bindings/"
+        if map_data == "osm":
+            bindings_dir = "../data/bindings/"
+        elif map_data == "drn":
+            bindings_dir = "../data/bindings_drn/"
+        else:
+            return JsonResponse({"error": "Unsupported value provided for the parameter 'map_data'. Choose between 'osm' or 'drn'."})
+
         files = [f for f in os.listdir(bindings_dir) if os.path.isfile(
             os.path.join(bindings_dir, f))]
 

@@ -142,7 +142,7 @@ class Command(BaseCommand):
 
         config_id = options["config_id"]
 
-        unique_bindings_from_route_on = 117
+        unique_bindings_from_route_on = 0 # 117 for osm bindings
 
         relevant_routes_1 = Route.objects.filter(
             id__range=(0, unique_bindings_from_route_on - 1))
