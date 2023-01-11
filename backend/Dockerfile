@@ -64,14 +64,14 @@ CMD "./run-test.sh"
 
 FROM builder AS dev
 # Run the development server
-RUN ./run-preheating.sh
+RUN ./run-preheating-dev.sh
 HEALTHCHECK --interval=60s --timeout=10s --retries=5 --start-period=10s \
   CMD curl --fail http://localhost:8000/healthcheck?token=healthcheck-token || exit 1
 CMD "./run-dev.sh"
 
 FROM builder AS production
 # Preheat our database, by running migrations and pre-loading data
-RUN ./run-preheating.sh
+RUN ./run-preheating-prod.sh
 HEALTHCHECK --interval=60s --timeout=10s --retries=5 --start-period=10s \
   CMD curl --fail http://localhost:8000/healthcheck?token=healthcheck-token || exit 1
 CMD "./run-prod.sh"
