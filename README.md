@@ -159,6 +159,8 @@ After running docker-compose up (in debug-mode such that the additional subcompo
 - Frontend for the jiggle_vis-backend: http://localhost:3000/jiggle_vis?route_id=1
 - Frontend for the projection_vis-backend: http://localhost:3000/projection_vis?route_id=1&lsa_id=2182&method=extended
 
+In the route composer we used Carto (CARTO Basemaps Terms of Service: https://drive.google.com/file/d/1P7bhSE-N9iegI398QYDjKeVhnbS7-Ilk/view) in combination with OpenStreetMap (available under the Open Data Commons Open Database License, https://www.openstreetmap.org/copyright) for the map tiles.
+
 ### Project Structure
 
 This module is split into two components, the `backend` service that selects signal groups and the `frontend` service that is used to visualize the algorithms of the `backend` service. Additionally, the `frontend` service is used to manually create route-sg-mappings which can be used to validate the `backend` service. To realize this, the `backend` service provides additional subcomponents to communicate with the `frontend` via REST endpoints. However, these components are stripped in the deployed `backend` service since they are only used for development.
