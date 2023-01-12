@@ -133,10 +133,17 @@ class ConnectionsResource(View):
 
         params = request.GET
 
-        # param that determines whether only connections should be returned, if there are no duplicates among them
+        # Param that determines whether only connections should be returned, if there are no duplicates among them.
+        # Checks all SGs nearby the route for possible duplicates.
+        # If already a few RouteLSABindings exist, long routes almost everytime include duplicates 
+        # which results in an exclusion of the whole route. Thus to still be able to include bindings
+        # from parts of the long routes that don't include duplicates this needs to be commented out.
+        # Just setting the url query parameter "show_duplicates" differently is not sufficient because 
+        # we still want to check for potential duplicates in the pre-selected bindings (the other view where
+        # this url query parameter is used).
         show_duplicates = True
-        if params.get("show_duplicates", "true") == u'false':
-            show_duplicates = False
+        """ if params.get("show_duplicates", "true") == u'false':
+            show_duplicates = False """
 
         connections = Connection.objects \
             .filter(lsa__geometry__dwithin=(route.geometry, D(m=settings.SEARCH_RADIUS_M)))
