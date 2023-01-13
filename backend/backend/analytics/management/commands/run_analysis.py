@@ -5,6 +5,7 @@ import os
 import json
 from routing.matching.ml.matcher import MLMatcher
 from routing.matching.proximity import ProximityMatcher
+from routing.matching.hypermodel import TopologicHypermodelMatcher
 from composer.utils import get_routes_with_bindings
 from analytics.models import Hit, RouteAnalysis, Run
 from composer.models import RouteLSABinding
@@ -235,7 +236,8 @@ class Command(BaseCommand):
                 "Please provide a valid value for the route_data option ('osm' or 'drn').")
         
         # Add strategies that should be analyized.
-        strategies = {"ml-drn": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ]}
+        # strategies = {"ml-drn": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ]}
+        strategies = {"topo": [ TopologicHypermodelMatcher.from_config_file() ]}
 
         runs = []
         for strategy_name, strategy in strategies.items():
