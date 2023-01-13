@@ -20,10 +20,10 @@ class Command(BaseCommand):
         with the matching algorithms.
     """ 
 
-    def profile_algorithm(self, algorithm_name, matchers):
+    def profile_algorithm(self, algorithm_name, matchers, route_data):
         run = Run.objects.create(algorithm_name=algorithm_name)
         
-        routes_with_bindings = get_routes_with_bindings()
+        routes_with_bindings = get_routes_with_bindings(route_data)
         
         constellations_right = {}
         constellations_false = {}
@@ -214,16 +214,32 @@ class Command(BaseCommand):
         print(f"Recall_C: {recall_c:.2f}")
         print(f"F1_C: {f1_c:.2f}")
         print(f"Mean execution time: {mean_exec_time}s")
+        
+    def add_arguments(self, parser):
+        # Add an argument to the parser that
+        # specifies whether bindings based on OSM or DRN routes should be used.
+        parser.add_argument("--route_data", type=str)
 
     def handle(self, *args, **options):
-        print("Running analysis...")    
+        print("Running analysis...")
+        
+        # Check if the path argument is valid
+        if not options["route_data"]:
+            raise Exception(
+                "Please provide a route_data to specify which bindings should be used.")
+            
+        route_data = options["route_data"]
+            
+        if route_data != "osm" and route_data != "drn":
+            raise Exception(
+                "Please provide a valid value for the route_data option ('osm' or 'drn').")
         
         # Add strategies that should be analyized.
-        strategies = {"ml": [ ProximityMatcher(search_radius_m=20), MLMatcher() ]}
+        strategies = {"ml-drn": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ]}
 
         runs = []
         for strategy_name, strategy in strategies.items():
-            run = self.profile_algorithm(strategy_name, strategy)
+            run = self.profile_algorithm(strategy_name, strategy, route_data)
             runs.append(run)
 
         if len(runs) > 1:

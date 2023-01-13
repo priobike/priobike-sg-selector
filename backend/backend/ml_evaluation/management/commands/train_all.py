@@ -23,8 +23,6 @@ from ml_evaluation.utils import generate_feature_transformer
 from composer.models import Constellation, RouteError
 
 class Command(BaseCommand):
-
-    logs_path = "ml_evaluation/logs/training/"
     
     def get_jiggle_feature(self, value, factor):
         return random.uniform(value-(value*factor), value+(value*factor))
@@ -107,21 +105,40 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Add an argument to the parser that
         # specifies feature config that should be used
-        parser.add_argument('config_train_id', type=int)
+        parser.add_argument('--config_train_id', type=int)
+        # Add an argument to the parser that
+        # specifies whether a dataset based on OSM or DRN routes should be used.
+        parser.add_argument("--route_data", type=str)
     
     def handle(self, *args, **options):
         # Check if the path argument is valid
         if not options["config_train_id"]:
             raise Exception("Please specify a config_train_id to specify which features should be extracted.")
         
+        # Check if the path argument is valid
+        if not options["route_data"]:
+            raise Exception(
+                "Please provide a route_data to specify which bindings should be used.")
+        
         config_train_id = options["config_train_id"]
+        route_data = options["route_data"]
         
         if config_train_id not in config_train:
             raise KeyError('No config for the given config id available.')
         
+        if route_data != "osm" and route_data != "drn":
+            raise Exception(
+                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+            
         config_data_and_features_id = config_train[config_train_id]["config_data_and_features"]
+            
+        if route_data == "osm":
+            logs_path = "ml_evaluation/logs_osm/training/"
+            dataset_path = os.path.join(settings.BASE_DIR, f"../backend/ml_evaluation/datasets_osm/dataset_osm_data_and_features_config_id_{str(config_data_and_features_id)}.json.gz")
+        elif route_data == "drn":
+            logs_path = "ml_evaluation/logs_drn/training/"
+            dataset_path = os.path.join(settings.BASE_DIR, f"../backend/ml_evaluation/datasets_drn/dataset_drn_data_and_features_config_id_{str(config_data_and_features_id)}.json.gz")
         
-        dataset_path = os.path.join(settings.BASE_DIR, f"../backend/ml_evaluation/datasets/dataset_data_and_features_config_id_{str(config_data_and_features_id)}.json.gz")
         with gzip.open(dataset_path) as f:
             byte_array = f.read()
             dataset = json.loads(byte_array.decode("utf-8"))
@@ -177,7 +194,7 @@ class Command(BaseCommand):
                     X_test_numpy = np.array(x_test_fold)
                     column_transformer = generate_feature_transformer(features_numpy=X_train_numpy, transformer=transformer,
                                                     data_feature_config=config_data_and_features[config_data_and_features_id],
-                                                    config_id=config_data_and_features_id, model_name=model_name)
+                                                    config_id=config_data_and_features_id, model_name=model_name, route_data=route_data)
                     
                     X_train_numpy = column_transformer.transform(X_train_numpy)
                     x_train_fold = X_train_numpy.tolist()
@@ -293,7 +310,7 @@ class Command(BaseCommand):
             print(f"{name}: test_f1={test_f1:.3f}, train_f1={train_f1:.3f}, test_acc={test_acc:.3f}, train_acc={train_acc:.3f}")
             print(f"{name}: tn={tn}, fp={fp}, fn={fn}, tp={tp}")
             
-            MLMatcher.store(clf, name, config_train_id)
+            MLMatcher.store(clf, name, config_train_id, route_data)
 
             if test_f1 > best_f1:
                 best_f1 = test_f1
@@ -303,14 +320,14 @@ class Command(BaseCommand):
         if best_model:
             print(f"Best model: {best_model_name} with F1={best_f1:.3f}")
             
-        with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}logs_train_all_config_train_id_{config_train_id}.csv"),"w") as my_csv:
+        with open(os.path.join(settings.BASE_DIR, f"{logs_path}logs_train_all_config_train_id_{config_train_id}.csv"),"w") as my_csv:
             csvWriter = csv.writer(my_csv,delimiter=' ')
             csvWriter.writerows(logs_csv)
             
-        with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}logs_train_all_config_train_id_{config_train_id}.json"), 'w') as fp:
+        with open(os.path.join(settings.BASE_DIR, f"{logs_path}logs_train_all_config_train_id_{config_train_id}.json"), 'w') as fp:
             json.dump(logs_json, fp, indent=4)
             
-        with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}/meta_train_logs/all_meta_logs_train_all_config_train_id_{config_train_id}.json"), 'w', encoding='utf-8') as fp:
+        with open(os.path.join(settings.BASE_DIR, f"{logs_path}/meta_train_logs/all_meta_logs_train_all_config_train_id_{config_train_id}.json"), 'w', encoding='utf-8') as fp:
             json.dump(meta_logs_json, fp, indent=4)
             
         highlight_meta_logs = {}
@@ -322,7 +339,7 @@ class Command(BaseCommand):
             "testRouteErrorsRatios": self.get_average_meta_ratio(meta_logs_json, "testRouteErrorsRatios", best_model_name),
         }
         
-        with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}/meta_train_logs/highlight_meta_logs_train_all_config_train_id_{config_train_id}.json"), 'w', encoding='utf-8') as fp:
+        with open(os.path.join(settings.BASE_DIR, f"{logs_path}/meta_train_logs/highlight_meta_logs_train_all_config_train_id_{config_train_id}.json"), 'w', encoding='utf-8') as fp:
             json.dump(highlight_meta_logs, fp, indent=4)
             
         constellation_names = [constellation_name for constellation_name in highlight_meta_logs["average_all_models"]["trainConstellationsRatios"] if constellation_name != "KNOT_SELECTED"]
@@ -364,6 +381,6 @@ class Command(BaseCommand):
         
         
         
-        with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}/meta_train_logs/highlight_meta_logs_train_all_config_train_id_{config_train_id}.csv"),"w") as my_csv:
+        with open(os.path.join(settings.BASE_DIR, f"{logs_path}/meta_train_logs/highlight_meta_logs_train_all_config_train_id_{config_train_id}.csv"),"w") as my_csv:
             csvWriter = csv.writer(my_csv,delimiter=' ')
             csvWriter.writerows(np.array(csv_highlight_logs).T)

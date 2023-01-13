@@ -22,7 +22,7 @@ from routing.matching.proximity import ProximityMatcher
 
 
 # The used ML-matcher when the endpoint for matching is called with the appropriate argument.
-ml_matcher = MLMatcher()
+ml_matcher = MLMatcher("osm")
 
 class RouteJsonValidator:
     def __init__(self, route_json):

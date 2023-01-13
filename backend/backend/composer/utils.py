@@ -7,7 +7,7 @@ from composer.models import Route
 from django.contrib.gis.geos.linestring import LineString
 from django.conf import settings
 
-def get_routes_with_bindings():
+def get_routes_with_bindings(route_data):
     """
     This function return a list with all routes that have bindings (between routes and signalgroups).
     Not only routes that have matches but also the routes that got looked at and that don't have matches.
@@ -23,9 +23,17 @@ def get_routes_with_bindings():
     every_route_looked_up_to = 0 # 117 for osm bindings
     relevant_routes_1 = Route.objects.filter(
         id__range=(0, every_route_looked_up_to - 1))
-
+    
+    if route_data != "osm" and route_data != "drn":
+            raise Exception(
+                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+        
     # To get the remaining routes we look at the .json-files in the bindings-directory.
-    bindings_dir = "../data/bindings/"
+    if route_data == "osm":
+        bindings_dir = "../data/bindings/"
+    elif route_data == "drn":
+        bindings_dir = "../data/bindings_drn/"
+
     files = [int(f.replace(".json", "")) for f in os.listdir(
         bindings_dir) if os.path.isfile(os.path.join(bindings_dir, f))]
     relevant_routes_2_ids = [
