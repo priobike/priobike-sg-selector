@@ -143,7 +143,8 @@ Response Structure:
 - signalGroups: A more detailled dictionary with information about all the signal groups, including datastream (FROST) ids.
 - crossings: A list of intersections along the route, including intersections that are not connected (and have no MAP-Topologies).
 
-## Specifig matching in dependence of the routing data basis
+## Matching on specific map data (OSM/DRN)
+
 In our app, we initially only supported routing based on OpenStreetMap (OSM) data. For this we also developed and studied our two matching approaches (algorithmic and ML). During the evaluation we came to the conclusion that routes based on OSM-data contain a lot of routing errors with respect to a cycling-specific-routing. Later we implemented routing based on an other data source than OSM. Specifically we used the so called [Digitales Radverkehrsnetz (DRN) Hamburg](https://metaver.de/trefferanzeige?docuuid=EA847D9F-6403-4B75-BCDB-73F831F960C7) providing us a much more detailed and correct representation of the cycle paths in Hamburg. With the new data source we were able to achieve much better results with respect to a cycling-specific-routing which manifests itself, for example, in the following points:
 - Available cycle paths are used a lot more
 - Fewer unnecessary and incorrect detours on or off the cycle path
