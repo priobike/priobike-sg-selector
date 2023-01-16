@@ -6,7 +6,7 @@ from django.contrib.gis.geos import LineString, Point
 from django.db.models.query import QuerySet
 from routing.matching import RouteMatcher
 from routing.matching.bearing import calc_side
-from routing.models import LSA
+from routing.models import LSA, LSAMetadata
 
 RouteSection = namedtuple("RouteSection", ["min_fraction", "max_fraction"])
 
@@ -145,9 +145,17 @@ class OverlapMatcher(RouteMatcher):
         for lsa_id_1, lsa_id_2 in overlaps:
             dist_1, dist_2 = distances[lsa_id_1], distances[lsa_id_2]
             side_1, side_2 = sides[lsa_id_1], sides[lsa_id_2]
+            lsa_metadata_1 = LSAMetadata.objects.get(pk=lsa_id_1)
+            lsa_metadata_2 = LSAMetadata.objects.get(pk=lsa_id_2)
+            
+            # If only one signalgroup is exclusively for bikes choose that one.
+            if lsa_metadata_1.lane_type == "Radfahrer" and lsa_metadata_2.lane_type != "Radfahrer":
+                excluded_lsas.add(lsa_id_2)
+            elif lsa_metadata_2.lane_type == "Radfahrer" and lsa_metadata_1.lane_type != "Radfahrer":
+                excluded_lsas.add(lsa_id_1)
 
             # If there is at least one perfect match, decide purely by the distance
-            if dist_1 <= self.perfect_match_threshold or dist_2 <= self.perfect_match_threshold:
+            elif dist_1 <= self.perfect_match_threshold or dist_2 <= self.perfect_match_threshold:
                 if dist_1 > dist_2:
                     excluded_lsas.add(lsa_id_1)
                 else:
