@@ -10,9 +10,8 @@ on:
 
 jobs:
   test:
-    runs-on: self-hosted
-    container: docker:latest
-
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
