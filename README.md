@@ -60,27 +60,27 @@ Select signal groups along a given route. The body of the POST request should co
 
 Perform an example request with the example preset route:
 ```
-curl --data "@backend/data/priobike_route_ost_west.json" http://localhost:8000/routing/select
+curl --data "@backend/data/priobike_route_ost_west.json" 'http://localhost:8000/routing/select'
 ```
 
 To select the OSM-specific algorithmic matcher, use:
 ```
-curl --data "@backend/data/priobike_route_ost_west.json" http://localhost:8000/routing/select?matcher=legacy&routing=osm
+curl --data "@backend/data/priobike_route_ost_west.json" 'http://localhost:8000/routing/select?matcher=legacy&routing=osm'
 ```
 
 To select the DRN-specific algorithmic matcher, use:
 ```
-curl --data "@backend/data/priobike_route_ost_west.json" http://localhost:8000/routing/select?matcher=legacy&routing=drn
+curl --data "@backend/data/priobike_route_ost_west.json" 'http://localhost:8000/routing/select?matcher=legacy&routing=drn'
 ```
 
 To select the OSM-specific machine learning matcher, use:
 ```
-curl --data "@backend/data/priobike_route_ost_west.json" http://localhost:8000/routing/select?matcher=ml&routing=osm
+curl --data "@backend/data/priobike_route_ost_west.json" 'http://localhost:8000/routing/select?matcher=ml&routing=osm'
 ```
 
 To select the DRN-specific machine learning matcher, use:
 ```
-curl --data "@backend/data/priobike_route_ost_west.json" http://localhost:8000/routing/select?matcher=ml&routing=drn
+curl --data "@backend/data/priobike_route_ost_west.json" 'http://localhost:8000/routing/select?matcher=ml&routing=drn'
 ```
 
 Results are in the following structure:
