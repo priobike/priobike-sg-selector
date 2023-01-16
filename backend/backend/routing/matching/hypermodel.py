@@ -46,8 +46,15 @@ class HypermodelMatcher(RouteMatcher):
             json.dump(config, f, indent=2)
 
     @classmethod
-    def from_config_file(cls) -> 'HypermodelMatcher':
-        config = cls.load_config()
+    def from_config_file(cls, config_path=None) -> 'HypermodelMatcher':
+        if config_path:
+            try:
+                with open(os.path.join(settings.BASE_DIR, config_path)) as f:
+                    config = json.load(f)
+            except FileNotFoundError:
+                config = cls.load_config()
+        else:
+            config = cls.load_config()
         params = config["params"]
         return cls(params)
 

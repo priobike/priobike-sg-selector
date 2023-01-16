@@ -2423,6 +2423,31 @@ config_data_and_features = {
         Lengths: [1],
         "feature_extractor_combination":  [BearingDiffs, RouteBearingChange, Lengths, LengthDiffs, PointDistances, Distance, Side, LSALaneType]
     },
+    # Test mit besser Transformation (Training, Test getrennt), Test ohne LaneType Feature
+    # (LaneType zu Overlap-Cleanup hinzugefügt - da die Ergebnisse schlechter waren, wieder ausgebaut. Um das also erneut zu testen, muss der 
+    # LaneType wieder zum Overlap-Cleanup hinzugefügt werden)
+    860301: {
+        "extended_projections": False,
+        "projection_method": "old",
+        "data_augmentation": False,
+        "with_duplicates": False,
+        "meta_last_bindings_data_update": {
+            "commit": "85cccfe6aec5b9c918f3d1d182bf2410869c23d9",
+            "datetime": "2022-08-23 5:44pm"
+        },
+        "tsfresh_features": False,
+        "feature_transformation_only_numerical": True,
+        "feature_transformation": {
+            "normalization": False,
+            "standardization": False,
+            "power_transformation": True,
+        },
+        BearingDiffs: [2, 4],
+        PointDistances: [3, 4],
+        LengthDiffs: [4],
+        Lengths: [1],
+        "feature_extractor_combination":  [BearingDiffs, RouteBearingChange, Lengths, LengthDiffs, PointDistances, Distance, Side]
+    },
     # Test mit optimierter extended projection
     8604: {
         "extended_projections": True,

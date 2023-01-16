@@ -10,7 +10,7 @@ from routing.matching import RouteMatcher
 from routing.matching.ml.features import get_features
 from routing.matching.ml.configs_production.trainings import config_train
 from routing.matching.ml.configs_production.datasets import config_data_and_features
-from routing.matching.ml.path_configs import models_production_path, models_evaluation_path
+from routing.matching.ml.path_configs import models_production_path_osm, models_production_path_drn, models_evaluation_path_osm, models_evaluation_path_drn
 from routing.matching.overlap import OverlapMatcher, calc_sections
 
 
@@ -20,7 +20,7 @@ class MLMatcher(RouteMatcher):
     """
 
     @classmethod
-    def store(cls, clf, model_name, config_train_id):
+    def store(cls, clf, model_name, config_train_id, route_data):
         """Store a model on the disk.
 
         Args:
@@ -28,12 +28,29 @@ class MLMatcher(RouteMatcher):
             model_name (_type_): The name under which the model should be saved.
             config_train_id (_type_): The ID under which circumstances the model got trained.
         """
-        model_path = os.path.join(
-            settings.BASE_DIR, f'{models_evaluation_path}model_config_train_id_{config_train_id}_name_{model_name}.joblib')
+        if route_data != "osm" and route_data != "drn":
+            raise Exception(
+                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+        
+        if route_data == "osm":
+            model_path = os.path.join(
+                settings.BASE_DIR, f'{models_evaluation_path_osm}model_config_train_id_{config_train_id}_name_{model_name}.joblib')
+        elif route_data == "drn":
+            model_path = os.path.join(
+                settings.BASE_DIR, f'{models_evaluation_path_drn}model_config_train_id_{config_train_id}_name_{model_name}.joblib')
+            
         with open(model_path, 'wb') as f:
             pickle.dump(clf, f)
+            
+    def get_feature_transformer_path(self, feature_transformer_name):
+        if self.route_data == "osm":
+            return os.path.join(
+                settings.BASE_DIR, f'{models_production_path_osm}model_config_feature_data_id_{self.data_features_id}_name_{feature_transformer_name}.joblib')
+        elif self.route_data == "drn":
+            return os.path.join(
+                settings.BASE_DIR, f'{models_production_path_drn}model_config_feature_data_id_{self.data_features_id}_name_{feature_transformer_name}.joblib')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, route_data, *args, **kwargs):
         """
         Initialize the ml matcher.
         """
@@ -44,9 +61,20 @@ class MLMatcher(RouteMatcher):
         # Needs to be set according to the models available in routing.matching.ml.models.
         self.model_name = "MLP"
         
+        if route_data != "osm" and route_data != "drn":
+            raise Exception(
+                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+            
+        self.route_data = route_data
+        
         # Load the ml model.
-        model_path = os.path.join(
-            settings.BASE_DIR, f'{models_production_path}model_config_train_id_{self.config_train_id}_name_{self.model_name}.joblib')
+        if route_data == "osm":
+            model_path = os.path.join(
+                settings.BASE_DIR, f'{models_production_path_osm}model_config_train_id_{self.config_train_id}_name_{self.model_name}.joblib')
+        elif route_data == "drn":
+            model_path = os.path.join(
+                settings.BASE_DIR, f'{models_production_path_drn}model_config_train_id_{self.config_train_id}_name_{self.model_name}.joblib')
+        
         try:
             with open(model_path, 'rb') as f:
                 self.clf = pickle.load(f)
@@ -54,34 +82,31 @@ class MLMatcher(RouteMatcher):
             print("Model does not exist!")
 
         # Get from the provided config, whether a feature transformer should be used.
-        data_features_id = config_train[self.config_train_id]["config_data_and_features"]
+        self.data_features_id = config_train[self.config_train_id]["config_data_and_features"]
         min_max_scaler_used = config_data_and_features[
-            data_features_id]["feature_transformation"]["normalization"]
+            self.data_features_id]["feature_transformation"]["normalization"]
         standard_scaler_used = config_data_and_features[
-            data_features_id]["feature_transformation"]["standardization"]
+            self.data_features_id]["feature_transformation"]["standardization"]
         yeo_johnson_power_transformer_used = config_data_and_features[
-            data_features_id]["feature_transformation"]["power_transformation"]
+            self.data_features_id]["feature_transformation"]["power_transformation"]
 
         # If a feature transformer should be used, load it from the disk.
         if min_max_scaler_used:
-            path = os.path.join(
-                settings.BASE_DIR, f'{models_production_path}model_config_feature_data_id_{data_features_id}_name_min_max_scaler.joblib')
+            path = self.get_feature_transformer_path("min_max_scaler")
             try:
                 with open(path, 'rb') as f:
                     self.transformer = pickle.load(f)
             except FileNotFoundError:
                 print("Min max scaler model does not exist!")
         elif standard_scaler_used:
-            path = os.path.join(
-                settings.BASE_DIR, f'{models_production_path}model_config_feature_data_id_{data_features_id}_name_standard_scaler.joblib')
+            path = self.get_feature_transformer_path("standard_scaler")
             try:
                 with open(path, 'rb') as f:
                     self.transformer = pickle.load(f)
             except FileNotFoundError:
                 print("Standard scaler model does not exist!")
         elif yeo_johnson_power_transformer_used:
-            path = os.path.join(
-                settings.BASE_DIR, f'{models_production_path}model_config_feature_data_id_{data_features_id}_name_yeo_johnson_power_transformer.joblib')
+            path = self.get_feature_transformer_path("yeo_johnson_power_transformer")
             try:
                 with open(path, 'rb') as f:
                     self.transformer = pickle.load(f)

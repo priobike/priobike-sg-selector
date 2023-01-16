@@ -8,7 +8,7 @@ from routing.matching.ml.features.feature_bearing_diffs import BearingDiffs
 from routing.matching.ml.features.feature_length_diffs import LengthDiffs
 from routing.matching.ml.features.feature_lengths import Lengths
 from routing.matching.ml.features.feature_point_distances import PointDistances
-from routing.matching.ml.path_configs import models_evaluation_path
+from routing.matching.ml.path_configs import models_evaluation_path_drn, models_evaluation_path_osm
 
 
 
@@ -31,7 +31,7 @@ def get_feature_names(extractors, config) -> List[str]:
 
     return feature_names
 
-def generate_feature_transformer(features_numpy, transformer, data_feature_config, config_id, model_name):
+def generate_feature_transformer(features_numpy, transformer, data_feature_config, config_id, model_name, route_data):
     """Trains and save a feature transformer for the given transformer type and given features.
 
     Args:
@@ -46,10 +46,19 @@ def generate_feature_transformer(features_numpy, transformer, data_feature_confi
     """
     setting = None
     
+    if route_data != "osm" and route_data != "drn":
+            raise Exception(
+                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+            
+    if route_data == "osm":
+        model_path = os.path.join(
+            settings.BASE_DIR, f'{models_evaluation_path_osm}model_config_feature_data_id_{config_id}_name_{model_name}.joblib')
+    elif route_data == "drn":
+        model_path = os.path.join(
+            settings.BASE_DIR, f'{models_evaluation_path_drn}model_config_feature_data_id_{config_id}_name_{model_name}.joblib')
+    
     if "feature_transformation_only_numerical" in data_feature_config and not data_feature_config["feature_transformation_only_numerical"]:
         setting = transformer.fit(features_numpy)
-        model_path = os.path.join(
-            settings.BASE_DIR, f'{models_evaluation_path}model_config_feature_data_id_{config_id}_name_{model_name}.joblib')
         with open(model_path, 'wb') as f:
             pickle.dump(setting, f)
     else:
@@ -83,8 +92,6 @@ def generate_feature_transformer(features_numpy, transformer, data_feature_confi
 
         setting = column_transformer.fit(features_numpy)
 
-        model_path = os.path.join(
-            settings.BASE_DIR, f'{models_evaluation_path}model_config_feature_data_id_{config_id}_name_{model_name}.joblib')
         with open(model_path, 'wb') as f:
             pickle.dump(setting, f)
             

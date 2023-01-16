@@ -69,10 +69,11 @@ class MatchesResource(View):
             
         params = request.GET
         matcher = str(params.get("matcher", "legacy"))
+        routing = str(params.get("routing", "osm"))
         
-        print(">>>>>>>>>>>>>>>>>>> Used matcher for demo: " + matcher)
+        print(f">>>>>>>>>>>>>>>>>>> Used matcher for demo: {matcher} ({routing}-version)")
                 
-        r = requests.post(f'http://localhost:8000/routing/select?matcher={matcher}', json=body)
+        r = requests.post(f'http://localhost:8000/routing/select?matcher={matcher}&routing={routing}', json=body)
         ids = [sg.replace("hamburg/", "") for sg in r.json()["signalGroups"]]        
 
         """ geojson = serialize("geojson", matches, geometry_field="geometry") """

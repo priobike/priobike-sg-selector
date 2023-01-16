@@ -13,7 +13,7 @@ from routing.matching.ml.features import get_features
 from routing.matching.proximity import ProximityMatcher
 from ml_evaluation.utils import get_feature_names
 from tqdm import tqdm
-from tsfresh import extract_relevant_features
+# from tsfresh import extract_relevant_features
 
 from ml_evaluation.configs.datasets import config_data_and_features
 
@@ -123,31 +123,63 @@ def process_route(route, config):
         total_feature_timings, total_normal_projection_timings, total_extended_projection_timings
 
 
-class Command(BaseCommand):
-    logs_path = "ml_evaluation/logs/dataset_with_features/"
-    log_file_prefix = "logs_generate_dataset_config_feature_and_data_id_"
-    data_file_path_and_prefix = "../backend/ml_evaluation/datasets/dataset_data_and_features_config_id_"
-
+class Command(BaseCommand):    
     def add_arguments(self, parser):
         # Add an argument to the parser that
-        # specifies feature config that should be used
-        parser.add_argument('config_id', type=int)
+        # specifies feature config that should be used.
+        parser.add_argument("--config_id", type=int)
+        # Add an argument to the parser that
+        # specifies whether bindings based on OSM or DRN routes should be used.
+        parser.add_argument("--route_data", type=str)
 
     def handle(self, *args, **options):
 
         # Check if the path argument is valid
         if not options["config_id"]:
             raise Exception(
-                "Please specify a config_id to specify which features should be extracted.")
+                "Please provide a config_id to specify which features should be extracted.")
+            
+        # Check if the path argument is valid
+        if not options["route_data"]:
+            raise Exception(
+                "Please provide a route_data to specify which bindings should be used.")
 
         config_id = options["config_id"]
+        route_data = options["route_data"]
+        
+        if route_data != "osm" and route_data != "drn":
+            raise Exception(
+                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+            
+        if route_data == "osm":
+            bindings_dir = "../data/bindings/"
+            logs_path = "ml_evaluation/logs_osm/dataset_with_features/"
+            log_file_prefix = "logs_osm_generate_dataset_config_feature_and_data_id_"
+            data_file_path_and_prefix = "../backend/ml_evaluation/datasets_osm/dataset_osm_data_and_features_config_id_"
+        elif route_data == "drn":
+            bindings_dir = "../data/bindings_drn/"
+            logs_path = "ml_evaluation/logs_drn/dataset_with_features/"
+            log_file_prefix = "logs_drn_generate_dataset_config_feature_and_data_id_"
+            data_file_path_and_prefix = "../backend/ml_evaluation/datasets_drn/dataset_drn_data_and_features_config_id_"
 
-        unique_bindings_from_route_on = 117
+        # This value is used to select the method with which the bindings are aggregated.
+        #
+        # The first method ('relevant_routes_1') is being used when until a certain route_id (e.g. 0 to 65)
+        # for every route manual bindings got selected. Therefore also bindings for routes can be used where no 
+        # extra binding got selected (we only select bindings for matches in the composer). Like the following example:
+        # For the routes with the IDs 0 to 5 we have for each route at least one binding with the label "match". For the routes
+        # with the IDs 7 to 10 the same. We also looked at the route with the ID 6 but did not select any matches. Therefore there exists
+        # no binding for this route. But we can still use this route, because we can implicitly say that every binding for that route get's the 
+        # label "no match".
+        #
+        # If we know that we did not look at every route (from a certain ID upwards), we can't use the first method and only can look at routes where at least
+        # one binding exist. Because otherwise we would implicitly create bindings with the label "no match" for routes where also bindings with the label "match"
+        # could exist.
+        unique_bindings_from_route_on = 0 # 117 for osm bindings
 
         relevant_routes_1 = Route.objects.filter(
             id__range=(0, unique_bindings_from_route_on - 1))
-
-        bindings_dir = "../data/bindings/"
+            
         files = [int(f.replace(".json", "")) for f in os.listdir(
             bindings_dir) if os.path.isfile(os.path.join(bindings_dir, f))]
 
@@ -382,10 +414,10 @@ class Command(BaseCommand):
 
         # Save (normal/extended) projection timings
         used_projection_method = config["projection_method"]
-        with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}projection_timings/timings_projection_{used_projection_method}_normal_method.json"), 'w') as fp:
+        with open(os.path.join(settings.BASE_DIR, f"{logs_path}projection_timings/timings_projection_{used_projection_method}_normal_method.json"), 'w') as fp:
             json.dump(total_normal_projection_timings, fp, indent=4)
         if config["extended_projections"]:
-            with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}projection_timings/timings_projection_extended_method.json"), 'w') as fp:
+            with open(os.path.join(settings.BASE_DIR, f"{logs_path}projection_timings/timings_projection_extended_method.json"), 'w') as fp:
                 json.dump(total_extended_projection_timings, fp, indent=4)
 
         class NumpyEncoder(json.JSONEncoder):
@@ -400,7 +432,7 @@ class Command(BaseCommand):
 
         # Dump the dataset to disk
         dataset_path = os.path.join(
-            settings.BASE_DIR, f"{self.data_file_path_and_prefix}{str(config_id)}.json.gz")
+            settings.BASE_DIR, f"{data_file_path_and_prefix}{str(config_id)}.json.gz")
         with gzip.open(dataset_path, "wb") as f:
             json_data = json.dumps({
                 "feature_names": feature_names,
@@ -410,5 +442,5 @@ class Command(BaseCommand):
         print(f"Wrote dataset to {dataset_path}")
 
         # Save the logs into a file
-        with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}{self.log_file_prefix}{config_id}.json"), 'w') as fp:
+        with open(os.path.join(settings.BASE_DIR, f"{logs_path}{log_file_prefix}{config_id}.json"), 'w') as fp:
             json.dump(dataset_logs, fp, indent=4)

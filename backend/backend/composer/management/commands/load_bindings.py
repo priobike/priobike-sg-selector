@@ -44,7 +44,6 @@ class Command(BaseCommand):
             # Load the bindings
             for binding_json in data:
                 # Only add the binding if the corresponding lsa and route exists
-                print(binding_json["fields"]["lsa"])
                 if LSA.objects.filter(pk = binding_json["fields"]["lsa"]).exists():
                     bindings.append(self.load_binding(binding_json))
 

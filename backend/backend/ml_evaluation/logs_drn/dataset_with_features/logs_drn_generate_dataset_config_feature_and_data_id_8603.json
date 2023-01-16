@@ -1,0 +1,344 @@
+{
+    "duplicate_statistics": {
+        "unique_count": 3593,
+        "removed_count": 1371
+    },
+    "feature_bearing_diffs": {
+        "binding_selected": {
+            "overall_mean": null,
+            "overall_mean_max": null,
+            "overall_mean_min": null,
+            "overall_first_last_mean": null,
+            "overall_first_last_mean_max": null,
+            "overall_first_last_mean_min": null,
+            "overall_max": 358.94777879596984,
+            "overall_max_mean": 15.246835565259945,
+            "overall_first_last_max": null,
+            "overall_first_last_max_mean": null,
+            "overall_min": 0.0,
+            "overall_min_mean": 8.197050587643622,
+            "overall_first_last_min": null,
+            "overall_first_last_min_mean": null,
+            "last_bearing_diff_mean": null,
+            "last_bearing_diff_max": null,
+            "last_bearing_diff_min": null,
+            "first_bearing_diff_mean": null,
+            "first_bearing_diff_max": null,
+            "first_bearing_diff_min": null
+        },
+        "binding_not_selected": {
+            "overall_mean": null,
+            "overall_mean_max": null,
+            "overall_mean_min": null,
+            "overall_first_last_mean": null,
+            "overall_first_last_mean_max": null,
+            "overall_first_last_mean_min": null,
+            "overall_max": 359.70469853271766,
+            "overall_max_mean": 164.46188832776747,
+            "overall_first_last_max": null,
+            "overall_first_last_max_mean": null,
+            "overall_min": 0.0,
+            "overall_min_mean": 65.36997723879375,
+            "overall_first_last_min": null,
+            "overall_first_last_min_mean": null,
+            "last_bearing_diff_mean": null,
+            "last_bearing_diff_max": null,
+            "last_bearing_diff_min": null,
+            "first_bearing_diff_mean": null,
+            "first_bearing_diff_max": null,
+            "first_bearing_diff_min": null
+        }
+    },
+    "feature_route_bearing_change": {
+        "binding_selected": {
+            "bearing_change_mean": 8.006438198553472,
+            "bearing_change_max": 323.8417489469627,
+            "bearing_change_min": 0.0,
+            "bearing_change_standard_deviation": 33.777284529034546
+        },
+        "binding_not_selected": {
+            "bearing_change_mean": 47.40427686685917,
+            "bearing_change_max": 359.7046977478933,
+            "bearing_change_min": 0.0,
+            "bearing_change_standard_deviation": 94.64069818158032
+        }
+    },
+    "feature_lengths": {
+        "binding_selected": [
+            {
+                "lsa_length_mean": null,
+                "lsa_length_max": null,
+                "lsa_length_min": null,
+                "lsa_length_standard_deviation": null,
+                "projected_lsa_length_mean": 34.12667797385437,
+                "projected_lsa_length_max": 211.40045099371014,
+                "projected_lsa_length_min": 0.0,
+                "projected_lsa_length_standard_deviation": 31.667425048679974
+            }
+        ],
+        "binding_not_selected": [
+            {
+                "lsa_length_mean": null,
+                "lsa_length_max": null,
+                "lsa_length_min": null,
+                "lsa_length_standard_deviation": null,
+                "projected_lsa_length_mean": 38.537105892534036,
+                "projected_lsa_length_max": 204.71291146229265,
+                "projected_lsa_length_min": 0.0,
+                "projected_lsa_length_standard_deviation": 36.609122124404585
+            }
+        ]
+    },
+    "feature_length_diffs": {
+        "binding_selected": {
+            "overall_mean": null,
+            "overall_mean_max": null,
+            "overall_mean_min": null,
+            "overall_max": null,
+            "overall_max_mean": null,
+            "overall_min": null,
+            "overall_min_mean": null,
+            "last_length_diff_mean": null,
+            "last_length_diff_max": null,
+            "last_length_diff_min": null,
+            "first_length_diff_mean": 1.5812616033097924,
+            "first_length_diff_max": 218.25680681943842,
+            "first_length_diff_min": 0.0
+        },
+        "binding_not_selected": {
+            "overall_mean": null,
+            "overall_mean_max": null,
+            "overall_mean_min": null,
+            "overall_max": null,
+            "overall_max_mean": null,
+            "overall_min": null,
+            "overall_min_mean": null,
+            "last_length_diff_mean": null,
+            "last_length_diff_max": null,
+            "last_length_diff_min": null,
+            "first_length_diff_mean": 11.093529791091257,
+            "first_length_diff_max": 10201.724918573867,
+            "first_length_diff_min": 0.0
+        }
+    },
+    "feature_point_distances": {
+        "binding_selected": {
+            "overall_mean": null,
+            "overall_mean_max": null,
+            "overall_mean_min": null,
+            "overall_max": null,
+            "overall_max_mean": null,
+            "overall_min": null,
+            "overall_min_mean": null,
+            "last_bearing_diff_mean": 6.488000754897101,
+            "last_bearing_diff_max": 45.17305988528042,
+            "last_bearing_diff_min": 0.014749822432131196,
+            "first_bearing_diff_mean": 6.402729508226349,
+            "first_bearing_diff_max": 47.05106414900319,
+            "first_bearing_diff_min": 0.0044559815677815565
+        },
+        "binding_not_selected": {
+            "overall_mean": null,
+            "overall_mean_max": null,
+            "overall_mean_min": null,
+            "overall_max": null,
+            "overall_max_mean": null,
+            "overall_min": null,
+            "overall_min_mean": null,
+            "last_bearing_diff_mean": 36.53556918762342,
+            "last_bearing_diff_max": 2594.4360796798937,
+            "last_bearing_diff_min": 0.02624749721589881,
+            "first_bearing_diff_mean": 37.4933842777128,
+            "first_bearing_diff_max": 2624.9890215737432,
+            "first_bearing_diff_min": 0.007550159599651404
+        }
+    },
+    "feature_distance": {
+        "binding_selected": {
+            "distance_mean": 4.660537933799921,
+            "distance_max": 33.69290804241747,
+            "distance_min": 0.0,
+            "distance_standard_deviation": 7.025187438164565
+        },
+        "binding_not_selected": {
+            "distance_mean": 8.486200070167218,
+            "distance_max": 2526.1767052426844,
+            "distance_min": 0.0,
+            "distance_standard_deviation": 46.735509395260294
+        }
+    },
+    "feature_side": {
+        "binding_selected": {
+            "left_count": 177,
+            "right_count": 378,
+            "no_side_count": 2
+        },
+        "binding_not_selected": {
+            "left_count": 2110,
+            "right_count": 905,
+            "no_side_count": 21
+        }
+    },
+    "feature_lsa_lane_type": {
+        "binding_selected": {
+            "radfahrer_count": 525,
+            "radfahrer_fu\u00dfg\u00e4nger_count": 15,
+            "radfahrer_kfz_count": 12,
+            "radfahrer_kfz_busse_count": 5,
+            "radfahrer_busse_count": 0,
+            "ratio(radfahrer/rest)": "1640%"
+        },
+        "binding_not_selected": {
+            "radfahrer_count": 1754,
+            "radfahrer_fu\u00dfg\u00e4nger_count": 40,
+            "radfahrer_kfz_count": 1096,
+            "radfahrer_kfz_busse_count": 144,
+            "radfahrer_busse_count": 2,
+            "ratio(radfahrer/rest)": "136%"
+        }
+    },
+    "duplicate_statistics_2": {
+        "projections_with_duplicate_coordinates": 266,
+        "projections_with_no_duplicate_coorindates": 4698,
+        "original_map_topologies_with_duplicate_coordinates": 27,
+        "original_map_topologies_with_no_duplicate_coordinates": 4937
+    },
+    "amount_of_routes": {
+        "set_1_not_only_unique_constellations": 0,
+        "set_2_mostly_only_unique_constellations": 49,
+        "total_amount_of_routes": 49,
+        "total_amount_of_constellations_between_routes_and_LSAs": 3593,
+        "total_amount_of_selected_constellations_slash_matched_lsas": 557,
+        "total_amount_of_unselected_constellations_slash_unmatched_lsas": 3036
+    },
+    "timings": {
+        "feature_bearing_diffs_max": {
+            "base_timing_mean": 0.0007927674232808742,
+            "base_timing_min": 0.0006041526794433594,
+            "base_timing_max": 0.0034961700439453125,
+            "extra_timing_mean": 3.742782652714289e-05,
+            "extra_timing_min": 2.956390380859375e-05,
+            "extra_timing_max": 0.00012636184692382812
+        },
+        "feature_bearing_diffs_min": {
+            "base_timing_mean": 0.0007927674232808742,
+            "base_timing_min": 0.0006041526794433594,
+            "base_timing_max": 0.0034961700439453125,
+            "extra_timing_mean": 1.7544082054488607e-05,
+            "extra_timing_min": 1.4781951904296875e-05,
+            "extra_timing_max": 9.584426879882812e-05
+        },
+        "feature_route_bearing_change__": {
+            "base_timing_mean": 0.0013301395582249816,
+            "base_timing_min": 0.001020669937133789,
+            "base_timing_max": 0.03889584541320801,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_lengths_projected_map_topology": {
+            "base_timing_mean": 1.4760722852733038e-05,
+            "base_timing_min": 1.239776611328125e-05,
+            "base_timing_max": 8.678436279296875e-05,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_length_diffs_first": {
+            "base_timing_mean": 0.00048765816292774283,
+            "base_timing_min": 0.000244140625,
+            "base_timing_max": 0.0039708614349365234,
+            "extra_timing_mean": 1.3605708753169304e-05,
+            "extra_timing_min": 1.1444091796875e-05,
+            "extra_timing_max": 6.67572021484375e-05
+        },
+        "feature_point_distances_last": {
+            "base_timing_mean": 0.0005007610985773596,
+            "base_timing_min": 0.00022864341735839844,
+            "base_timing_max": 0.005165815353393555,
+            "extra_timing_mean": 1.256255542530733e-05,
+            "extra_timing_min": 1.049041748046875e-05,
+            "extra_timing_max": 0.0002129077911376953
+        },
+        "feature_point_distances_first": {
+            "base_timing_mean": 0.0005007610985773596,
+            "base_timing_min": 0.00022864341735839844,
+            "base_timing_max": 0.005165815353393555,
+            "extra_timing_mean": 6.349455628252913e-06,
+            "extra_timing_min": 5.0067901611328125e-06,
+            "extra_timing_max": 3.1948089599609375e-05
+        },
+        "feature_distance__": {
+            "base_timing_mean": 5.3644132268323135e-05,
+            "base_timing_min": 1.71661376953125e-05,
+            "base_timing_max": 0.0002925395965576172,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_side_left": {
+            "base_timing_mean": 0.0009828753571275931,
+            "base_timing_min": 0.0007686614990234375,
+            "base_timing_max": 0.004030942916870117,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_side_right": {
+            "base_timing_mean": -524.0,
+            "base_timing_min": -524.0,
+            "base_timing_max": -524.0,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_side_no_side": {
+            "base_timing_mean": -524.0,
+            "base_timing_min": -524.0,
+            "base_timing_max": -524.0,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_lsa_lane_type_only_bike": {
+            "base_timing_mean": 0.0009188572309557034,
+            "base_timing_min": 0.0007488727569580078,
+            "base_timing_max": 0.03699445724487305,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_lsa_lane_type_bike_pedestrian": {
+            "base_timing_mean": -524.0,
+            "base_timing_min": -524.0,
+            "base_timing_max": -524.0,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_lsa_lane_type_car_bike": {
+            "base_timing_mean": -524.0,
+            "base_timing_min": -524.0,
+            "base_timing_max": -524.0,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_lsa_lane_type_car_bus_bike": {
+            "base_timing_mean": -524.0,
+            "base_timing_min": -524.0,
+            "base_timing_max": -524.0,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        },
+        "feature_lsa_lane_type_bus_bike": {
+            "base_timing_mean": -524.0,
+            "base_timing_min": -524.0,
+            "base_timing_max": -524.0,
+            "extra_timing_mean": 9999999.0,
+            "extra_timing_min": 9999999.0,
+            "extra_timing_max": 9999999.0
+        }
+    }
+}

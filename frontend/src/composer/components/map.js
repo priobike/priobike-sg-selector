@@ -128,11 +128,11 @@ export default class LSAMap extends React.Component {
       new RouteLayer(),
       new RouteDirectionLayer({ currentTicyclome: this.state.animationProgress }),
       new LSAsLayer({
-        getLineColor: d => {        
-          if (parseInt(d.properties.lsa) in this.state.selectedLSAs && this.state.selectedLSAs[d.properties.lsa].confirmed) {
+        getLineColor: d => {
+          if (d.properties.lsa in this.state.selectedLSAs && this.state.selectedLSAs[d.properties.lsa].confirmed) {
             return [0, 255, 0];
           }
-          if (parseInt(d.properties.lsa) in this.state.selectedLSAs) {
+          if (d.properties.lsa in this.state.selectedLSAs) {
             return [255, 255, 0];
           }
           return [255, 0, 0];

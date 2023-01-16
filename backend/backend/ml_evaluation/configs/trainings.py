@@ -827,6 +827,13 @@ config_train = {
         "shuffle": True,
         "ssf": True,
     },
+    # Daten ohne LaneType-Feature (zum Testen ob der nach LaneType-differenzierte Overlap-Matcher was bringt)
+    860301009191: {
+        "config_data_and_features": 860301,
+        "undersample": False,
+        "shuffle": True,
+        "ssf": True,
+    },
     # Test mit optimierter extended projection
     8604009191: {
         "config_data_and_features": 8604,

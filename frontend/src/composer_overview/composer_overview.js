@@ -18,6 +18,7 @@ import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 
 const domain = window.location.protocol + '//' + window.location.hostname;
 const port = process.env.REACT_APP_BACKEND_PORT;
+const mapData = new URLSearchParams(window.location.search).get('map_data');
 
 export default class Composer extends React.Component {
   constructor(props) {
@@ -156,7 +157,7 @@ export default class Composer extends React.Component {
   }
 
   healthCheckBindingFiles = async () => {
-    await fetch(`${domain}:${port}/composer/api/health_check/bindings/files`)
+    await fetch(`${domain}:${port}/composer/api/health_check/bindings/files${mapData ? "?map_data=" + mapData : ""}`)
       .then(res => res.json())
       .then(res => {
         this.setState({
@@ -166,7 +167,7 @@ export default class Composer extends React.Component {
   }
 
   healthCheckBindingsDatabase = async () => {
-    await fetch(`${domain}:${port}/composer/api/health_check/bindings/database`)
+    await fetch(`${domain}:${port}/composer/api/health_check/bindings/database${mapData ? "?map_data=" + mapData : ""}`)
       .then(res => res.json())
       .then(res => {
         this.setState({
@@ -182,7 +183,7 @@ export default class Composer extends React.Component {
         <Grid container spacing={2}>
           <Grid item xs={8}>
             <Typography variant="h4" component="h1">
-              Overview of the created bindings:
+              Overview of the created bindings ({mapData ? mapData : "osm"}):
             </Typography>
           </Grid>
           <Grid item xs={4}>

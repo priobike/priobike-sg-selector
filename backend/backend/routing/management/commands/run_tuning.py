@@ -150,10 +150,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("Tuning the matching algorithms...")
 
-        strategies = {
+        """ strategies = {
             "shortest-path": ShortestPathHypermodelMatcher,
             "strict-shortest-path": StrictShortestPathHypermodelMatcher,
             "probabilistic": ProbabilisticHypermodelMatcher,
+        } """
+        
+        strategies = {
+            "topological": TopologicHypermodelMatcher,
         }
 
         processes = []
