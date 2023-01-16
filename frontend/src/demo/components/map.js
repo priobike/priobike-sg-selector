@@ -12,6 +12,7 @@ const domain = window.location.protocol + '//' + window.location.hostname;
 const port = process.env.REACT_APP_BACKEND_PORT;
 const routeId = new URLSearchParams(window.location.search).get('route_id');
 const matcher = new URLSearchParams(window.location.search).get('matcher');
+const routing = new URLSearchParams(window.location.search).get('routing');
 
 const tooltipSource = new LSATooltipSource();
 
@@ -91,7 +92,7 @@ export default class LSAMap extends React.Component {
 
   matchSignalgroups = () => {
     // Fetch the matches from the server
-    fetch(`${domain}:${port}/demo/api/route/${routeId}/matches${matcher ? "?matcher=" + matcher : ""}`)
+    fetch(`${domain}:${port}/demo/api/route/${routeId}/matches${matcher ? "?matcher=" + matcher : ""}${routing ? "&routing=" + routing : ""}`)
     .then(res => res.json())
     .then(res => {
       this.setState({
