@@ -10,15 +10,19 @@ from django.contrib.gis.geos import LineString, Point
 from django.contrib.gis.measure import D
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
+from django.db.models.aggregates import Count
 from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from django.core.serializers import serialize
 from routing.matching import get_matches
 from routing.matching.hypermodel import TopologicHypermodelMatcher
 from routing.models import LSA, LSACrossing
 from routing.matching.ml.matcher import MLMatcher
 from routing.matching.proximity import ProximityMatcher
+from routing.crossing_matching.matcher import CrossingMatcher
+from routing.matching.bearing import get_bearing
 
 class RouteJsonValidator:
     def __init__(self, route_json):
@@ -259,3 +263,93 @@ class LSASelectionView(View):
         
         print(f'Matching time: {time.time() - startT}ms')
         return HttpResponse(response_json, content_type="application/json")
+    
+class CrossingSelectionView(View):
+    """
+    View to find crossings with signal groups along a given route.
+    """
+    
+    def post(self, request, *args, **kwargs):
+        """
+        Handle the POST request.
+        
+        The body of the POST request should contain the route as follows:
+        {
+            "route": [
+                { "lon": <longitude>, "lat": <latitude>, "alt": <altitude> },
+                ...
+            ]
+        }
+        """
+        
+        logging.debug(f"Received crossing sg selection request with body: {request.body}")
+
+        try:
+            route_linestring = RouteJsonValidator(request.body).validate(proj=settings.LONLAT)
+        except ValidationError as e:
+            return JsonResponse({"error": str(e)})
+        
+        # If the route is too short, don't perform matching.
+        if len(route_linestring.coords) < 2:
+            return JsonResponse({"error": "Not enough waypoints in the route."})
+        
+        matched_unordered_sgs = CrossingMatcher(route_linestring).match()
+        
+        # Snap the SG positions to the route as marked waypoints
+        sg_snaps = snap_lsas(matched_unordered_sgs, route_linestring)
+
+        # Get the disconnected crossings along the route
+        crossings = LSACrossing.objects.filter(point__dwithin=(route_linestring, D(m=20)))
+        crossing_snaps = snap_crossings(crossings, route_linestring)
+
+        # Insert the snapped waypoints into the route
+        waypoints = make_waypoints(sg_snaps, crossing_snaps, route_linestring)
+        
+        # Create signal group/crossings data
+        crossing_json = {}
+        for sg in matched_unordered_sgs:
+            # TODO crossing entsprechend der Reihenfolge entlang der Route sortieren
+            crossing_json[sg.lsametadata.traffic_lights_id][sg.lsametadata.signal_group_id] = {
+                "label": sg.lsametadata.signal_group_id,
+                "position": {
+                    "lon": sg.start_point.x,
+                    "lat": sg.start_point.y,
+                },
+                # Used to subscribe to the signal group
+                "id": sg.lsametadata.signal_group_id,
+                "lsaId": sg.id,
+                "connectionId": sg.lsametadata.connection_id,
+                "laneType": sg.lsametadata.lane_type,
+                "bearingStart": get_bearing(sg.geometry.coords[0][0], sg.geometry.coords[0][1], sg.geometry.coords[1][0], sg.geometry.coords[1][1]),
+                "bearingEnd": get_bearing(sg.geometry.coords[-2][0], sg.geometry.coords[-2][1], sg.geometry.coords[-1][0], sg.geometry.coords[-1][1]),
+                # Used by the app to subscribe to live data streams
+                "datastreamDetectorCar": sg.lsametadata.datastream_detector_car_id,
+                "datastreamDetectorCyclists": sg.lsametadata.datastream_detector_cyclists_id,
+                "datastreamCycleSecond": sg.lsametadata.datastream_cycle_second_id,
+                "datastreamPrimarySignal": sg.lsametadata.datastream_primary_signal_id,
+                "datastreamSignalProgram": sg.lsametadata.datastream_signal_program_id,
+            }
+            
+         # Create some crossings data
+        all_crossings_json = [
+            {
+                "name": s.crossing.name,
+                "position": {
+                    "lon": s.point.x,
+                    "lat": s.point.y,
+                },
+                "connected": s.crossing.connected,
+            } for s in crossing_snaps
+        ]
+
+        # Use the waypoint encoder to serialize the waypoints
+        response_json = json.dumps({
+            "route": waypoints,
+            "connectedCrossings": crossing_json,
+            "crossings": all_crossings_json,
+        }, indent=2 if settings.DEBUG else None, ensure_ascii=False)
+        
+        return HttpResponse(response_json, content_type="application/json")
+        
+        
+        
