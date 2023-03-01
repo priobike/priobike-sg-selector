@@ -18,7 +18,7 @@ from django.views.generic import View
 from django.core.serializers import serialize
 from routing.matching import get_matches
 from routing.matching.hypermodel import TopologicHypermodelMatcher
-from routing.models import LSA, LSACrossing
+from routing.models import LSA, LSACrossing, LSAMetadata
 from routing.matching.ml.matcher import MLMatcher
 from routing.matching.proximity import ProximityMatcher
 from routing.crossing_matching.matcher import CrossingMatcher
@@ -264,6 +264,7 @@ class LSASelectionView(View):
         print(f'Matching time: {time.time() - startT}ms')
         return HttpResponse(response_json, content_type="application/json")
     
+@method_decorator(csrf_exempt, name='dispatch')
 class CrossingSelectionView(View):
     """
     View to find crossings with signal groups along a given route.
@@ -305,30 +306,53 @@ class CrossingSelectionView(View):
         # Insert the snapped waypoints into the route
         waypoints = make_waypoints(sg_snaps, crossing_snaps, route_linestring)
         
-        # Create signal group/crossings data
-        crossing_json = {}
-        for sg in matched_unordered_sgs:
-            # TODO crossing entsprechend der Reihenfolge entlang der Route sortieren
-            crossing_json[sg.lsametadata.traffic_lights_id][sg.lsametadata.signal_group_id] = {
-                "label": sg.lsametadata.signal_group_id,
+        # Create some signal group data
+        signal_groups_json = {}
+        for lsa in matched_unordered_sgs:
+            signal_groups_json[lsa.lsametadata.signal_group_id] = {
+                "label": lsa.lsametadata.signal_group_id,
                 "position": {
-                    "lon": sg.start_point.x,
-                    "lat": sg.start_point.y,
+                    "lon": lsa.start_point.x,
+                    "lat": lsa.start_point.y,
                 },
                 # Used to subscribe to the signal group
-                "id": sg.lsametadata.signal_group_id,
-                "lsaId": sg.id,
-                "connectionId": sg.lsametadata.connection_id,
-                "laneType": sg.lsametadata.lane_type,
-                "bearingStart": get_bearing(sg.geometry.coords[0][0], sg.geometry.coords[0][1], sg.geometry.coords[1][0], sg.geometry.coords[1][1]),
-                "bearingEnd": get_bearing(sg.geometry.coords[-2][0], sg.geometry.coords[-2][1], sg.geometry.coords[-1][0], sg.geometry.coords[-1][1]),
+                "id": lsa.lsametadata.signal_group_id,
+                "lsaId": lsa.id,
+                "connectionId": lsa.lsametadata.connection_id,
+                "laneType": lsa.lsametadata.lane_type,
+                "bearingStart": get_bearing(lsa.geometry.coords[0][0], lsa.geometry.coords[0][1], lsa.geometry.coords[1][0], lsa.geometry.coords[1][1]),
+                "bearingEnd": get_bearing(lsa.geometry.coords[-2][0], lsa.geometry.coords[-2][1], lsa.geometry.coords[-1][0], lsa.geometry.coords[-1][1]),
                 # Used by the app to subscribe to live data streams
-                "datastreamDetectorCar": sg.lsametadata.datastream_detector_car_id,
-                "datastreamDetectorCyclists": sg.lsametadata.datastream_detector_cyclists_id,
-                "datastreamCycleSecond": sg.lsametadata.datastream_cycle_second_id,
-                "datastreamPrimarySignal": sg.lsametadata.datastream_primary_signal_id,
-                "datastreamSignalProgram": sg.lsametadata.datastream_signal_program_id,
+                "datastreamDetectorCar": lsa.lsametadata.datastream_detector_car_id,
+                "datastreamDetectorCyclists": lsa.lsametadata.datastream_detector_cyclists_id,
+                "datastreamCycleSecond": lsa.lsametadata.datastream_cycle_second_id,
+                "datastreamPrimarySignal": lsa.lsametadata.datastream_primary_signal_id,
+                "datastreamSignalProgram": lsa.lsametadata.datastream_signal_program_id,
             }
+            
+        # Create a list where each element is a crossing with a list of signal groups on it.
+        # The crossings as well as the signal groups are ordered in direction of the route.
+        ordered_connected_crossings = []
+        current_crossing_id = None
+        signal_groups_on_crossing = []
+        for waypoint in waypoints:
+            if "signalGroupId" in waypoint and waypoint["signalGroupId"] is not None:
+                next_crossing_id = LSAMetadata.objects.get(signal_group_id=waypoint["signalGroupId"]).traffic_lights_id
+                if current_crossing_id != next_crossing_id:
+                    if current_crossing_id != None:
+                        ordered_connected_crossings.append({
+                            "id": current_crossing_id,
+                            "position": {
+                                "lon": signal_groups_on_crossing[0]["position"]["lon"],
+                                "lat": signal_groups_on_crossing[0]["position"]["lat"],
+                            },
+                            "signalGroups": signal_groups_on_crossing,
+                        })
+                        signal_groups_on_crossing = []
+                    current_crossing_id = next_crossing_id
+                signal_groups_on_crossing.append(signal_groups_json[waypoint["signalGroupId"]])
+                
+                
             
          # Create some crossings data
         all_crossings_json = [
@@ -345,7 +369,7 @@ class CrossingSelectionView(View):
         # Use the waypoint encoder to serialize the waypoints
         response_json = json.dumps({
             "route": waypoints,
-            "connectedCrossings": crossing_json,
+            "orderedConnectedCrossings": ordered_connected_crossings,
             "crossings": all_crossings_json,
         }, indent=2 if settings.DEBUG else None, ensure_ascii=False)
         
