@@ -290,11 +290,14 @@ class CrossingSelectionView(View):
         except ValidationError as e:
             return JsonResponse({"error": str(e)})
         
+        params = request.GET
+        bearing_diff = int(params.get("beargingDiff", 30))
+        
         # If the route is too short, don't perform matching.
         if len(route_linestring.coords) < 2:
             return JsonResponse({"error": "Not enough waypoints in the route."})
         
-        matched_unordered_sgs = CrossingMatcher(route_linestring).match()
+        matched_unordered_sgs = CrossingMatcher(route_linestring).match(bearing_diff)
         
         # Snap the SG positions to the route as marked waypoints
         sg_snaps = snap_lsas(matched_unordered_sgs, route_linestring)

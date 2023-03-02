@@ -14,7 +14,7 @@ class CrossingMatcher:
     def __init__(self, route: LineString):
         self.route = route
         
-    def match(self):
+    def match(self, bearing_diff: int):
         """
         Perform the bulk matching based on proximity and bearing.
         """
@@ -32,7 +32,7 @@ class CrossingMatcher:
             
             bearing_diff = calc_bearing_diffs(sg_start, sg_start_route_projection)
             
-            if bearing_diff[0] > 30:
+            if bearing_diff[0] > bearing_diff:
                 sg_ids_to_remove.add(sg.id)
         
         nearby_sgs.exclude(id__in=sg_ids_to_remove)
