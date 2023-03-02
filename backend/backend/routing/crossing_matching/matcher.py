@@ -25,13 +25,13 @@ class CrossingMatcher:
         # Second: Filter the SGs by bearing.
         sg_ids_to_remove = set()
         for sg in nearby_sgs:
-            sg_start = LineString(sg.geometry.coords[:2])
-            sg_start.srid = sg.geometry.srid
+            sg_start = LineString(sg.ingress_geometry.coords[-2:])
+            sg_start.srid = sg.ingress_geometry.srid
             sg_start_route_projection = project_onto_route(sg_start, self.route)
             
-            bearing_diff = calc_bearing_diffs(sg_start, sg_start_route_projection)
-            
-            if bearing_diff[0] > bearing_diff:
+            bearing_diffs = calc_bearing_diffs(sg_start, sg_start_route_projection)
+                       
+            if bearing_diffs[0] > bearing_diff:
                 sg_ids_to_remove.add(sg.id)
         
         nearby_sgs.exclude(id__in=sg_ids_to_remove)
