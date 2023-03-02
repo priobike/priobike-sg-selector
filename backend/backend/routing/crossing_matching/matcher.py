@@ -19,11 +19,10 @@ class CrossingMatcher:
         Perform the bulk matching based on proximity and bearing.
         """
         
-        # First: Gather all SGs that are within a 50m distance of the last waypoint of the route.
+        # First: Gather all SGs that are within a certain distance of the route.
         nearby_sgs = LSA.objects.filter(geometry__dwithin=(self.route, D(m=20)))
         
-        # Second: Filter the SGs by bearing. Only keep SGs where the bearing between the first two waypoints of the SG
-        # is similar to the bearing of the last two waypoints of the route.
+        # Second: Filter the SGs by bearing.
         sg_ids_to_remove = set()
         for sg in nearby_sgs:
             sg_start = LineString(sg.geometry.coords[:2])
