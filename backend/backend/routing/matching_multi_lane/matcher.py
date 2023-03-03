@@ -29,10 +29,9 @@ class MultiLaneMatcher:
             sg_start_route_projection = project_onto_route(sg_start, self.route)
             
             bearing_diffs = calc_bearing_diffs(sg_start, sg_start_route_projection)
-                       
             if bearing_diffs[0] > bearing_diff:
                 sg_ids_to_remove.add(sg.id)
-        
-        nearby_sgs.exclude(id__in=sg_ids_to_remove)
 
+        nearby_sgs = nearby_sgs.exclude(id__in=sg_ids_to_remove)
+        
         return nearby_sgs
