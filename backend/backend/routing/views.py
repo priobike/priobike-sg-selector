@@ -83,6 +83,7 @@ def get_sg_distances_on_route(sgs: Iterable[LSA], route: LineString) -> List[dic
         "bearingStart": float,
         "bearingEnd": float,
         "distanceOnRoute": float,
+        "laneType": string,
     }]
     """
     meter_route = route.transform(settings.METRICAL, clone=True)
@@ -106,7 +107,8 @@ def get_sg_distances_on_route(sgs: Iterable[LSA], route: LineString) -> List[dic
             "projectedLengthOnRoute": sg_projected_length_on_route,
             "bearingStart": get_bearing(sg.geometry.coords[0][0], sg.geometry.coords[0][1], sg.geometry.coords[1][0], sg.geometry.coords[1][1]),
             "bearingEnd": get_bearing(sg.geometry.coords[-2][0], sg.geometry.coords[-2][1], sg.geometry.coords[-1][0], sg.geometry.coords[-1][1]),
-            "distanceOnRoute": distance
+            "distanceOnRoute": distance,
+            "laneType": sg.lsametadata.lane_type,
         }
         for sg, distance, sg_projected_length_on_route in zip(sgs, sg_distances_on_route, sg_projected_lengths_on_route)]
 
