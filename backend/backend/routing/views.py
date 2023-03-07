@@ -10,15 +10,13 @@ from django.contrib.gis.geos import LineString, Point
 from django.contrib.gis.measure import D
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
-from django.db.models.aggregates import Count
 from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
-from django.core.serializers import serialize
 from routing.matching import get_matches
 from routing.matching.hypermodel import TopologicHypermodelMatcher
-from routing.models import LSA, LSACrossing, LSAMetadata
+from routing.models import LSA, LSACrossing
 from routing.matching.ml.matcher import MLMatcher
 from routing.matching.proximity import ProximityMatcher
 from routing.matching_multi_lane.matcher import MultiLaneMatcher
@@ -358,8 +356,6 @@ class MultiLaneSelectionView(View):
         }
         """
         
-        DISTANCE_TO_ROUTE = 20 
-        
         logging.debug(f"Received multi lane sg selection request with body: {request.body}")
 
         try:
@@ -369,19 +365,20 @@ class MultiLaneSelectionView(View):
         
         params = request.GET
         bearing_diff = int(params.get("bearingDiff", 30))
+        distance_to_route = int(params.get("distanceToRoute", 20))
         
         # If the route is too short, don't perform matching.
         if len(route_linestring.coords) < 2:
             return JsonResponse({"error": "Not enough waypoints in the route."})
         
-        matched_unordered_sgs = MultiLaneMatcher(route_linestring).match(DISTANCE_TO_ROUTE, bearing_diff)
+        matched_unordered_sgs = MultiLaneMatcher(route_linestring).match(distance_to_route, bearing_diff)
                 
         # Snap the SG positions to the route and get their distances on the route
         sg_distances_on_route = get_sg_distances_on_route(matched_unordered_sgs, route_linestring)
         sg_distances_on_route.sort(key=lambda x: x["distanceOnRoute"])
         
         # Snap the disconnected crossings to the route and get their distances on the route
-        crossings = LSACrossing.objects.filter(point__dwithin=(route_linestring, D(m=DISTANCE_TO_ROUTE)))
+        crossings = LSACrossing.objects.filter(point__dwithin=(route_linestring, D(m=distance_to_route)))
         crossings_distances_on_route = get_crossing_distances_on_route(crossings, route_linestring)
         crossings_distances_on_route.sort(key=lambda x: x["distanceOnRoute"])
 
