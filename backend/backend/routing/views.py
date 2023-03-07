@@ -19,6 +19,9 @@ from routing.matching.hypermodel import TopologicHypermodelMatcher
 from routing.models import LSA, LSACrossing
 from routing.matching.ml.matcher import MLMatcher
 from routing.matching.proximity import ProximityMatcher
+from routing.matching_multi_lane.matcher import MultiLaneMatcher
+from routing.matching.bearing import get_bearing
+from routing.matching.projection import project_onto_route
 
 class RouteJsonValidator:
     def __init__(self, route_json):
@@ -64,6 +67,80 @@ def snap_lsas(lsas: Iterable[LSA], route: LineString) -> List[LSASnap]:
         snapped_point = lonlat_route.interpolate_normalized(lonlat_route.project_normalized(start_point))
         snapped_points.append(snapped_point)
     return [LSASnap(lsa, point) for lsa, point in zip(lsas, snapped_points)]
+
+def get_sg_distances_on_route(sgs: Iterable[LSA], route: LineString) -> List[dict]:
+    """
+    Snap the SGs to the route. Returns an unordered list of SGs and their absolute distances on the route with the following structure:
+    [{
+        "id": string,
+        "position": {
+            "lon": float,
+            "lat": float,
+        },
+        "projectedLenghtOnRoute": float,
+        "bearingStart": float,
+        "bearingEnd": float,
+        "distanceOnRoute": float,
+        "laneType": string,
+    }]
+    """
+    meter_route = route.transform(settings.METRICAL, clone=True)
+    sg_distances_on_route = []
+    sg_projected_lengths_on_route = []
+    for sg in sgs:
+        start_point = sg.start_point.transform(settings.METRICAL, clone=True)
+        distance_on_route = meter_route.project_normalized(start_point)
+        sg_distances_on_route.append(distance_on_route)
+        
+        sg = sg.geometry.transform(settings.METRICAL, clone=True)
+        sg_projected = project_onto_route(sg, route)
+        sg_projected_lengths_on_route.append(sg_projected.length)
+    return [
+        {
+            "id": sg.lsametadata.signal_group_id, 
+            "position": {
+                "lon": sg.start_point.x,
+                "lat": sg.start_point.y,
+            },
+            "projectedLengthOnRoute": sg_projected_length_on_route,
+            "bearingStart": get_bearing(sg.geometry.coords[0][0], sg.geometry.coords[0][1], sg.geometry.coords[1][0], sg.geometry.coords[1][1]),
+            "bearingEnd": get_bearing(sg.geometry.coords[-2][0], sg.geometry.coords[-2][1], sg.geometry.coords[-1][0], sg.geometry.coords[-1][1]),
+            "distanceOnRoute": distance,
+            "laneType": sg.lsametadata.lane_type,
+        }
+        for sg, distance, sg_projected_length_on_route in zip(sgs, sg_distances_on_route, sg_projected_lengths_on_route)]
+
+
+def get_crossing_distances_on_route(crossings: Iterable[LSACrossing], route: LineString) -> List[dict]:
+    """
+    Snap the crossings to the route. Returns an unordered list of crossings and their absolute distances on the route with the following structure:
+    [{
+        "name": string,
+        "position": {
+            "lon": float,
+            "lat": float,
+        },
+        "distanceOnRoute": float,
+        "connected": boolean,
+    }]
+    """
+    lonlat_route = route.transform(settings.METRICAL, clone=True)
+    crossing_distances_on_route = []
+    for crossing in crossings:
+        start_point = crossing.point.transform(settings.METRICAL, clone=True)
+        distance_on_route = lonlat_route.project(start_point)
+        crossing_distances_on_route.append(distance_on_route)
+    return [
+        {
+            "name": crossing.name,
+            "position": {
+                "lon": crossing.point.x,
+                "lat": crossing.point.y,
+            },
+            "distanceOnRoute": distance,
+            "connected": crossing.connected,
+        }
+        for crossing, distance in zip(crossings, crossing_distances_on_route)]
 
 
 LSACrossingSnap = namedtuple("LSACrossingSnap", [
@@ -259,3 +336,59 @@ class LSASelectionView(View):
         
         print(f'Matching time: {time.time() - startT}ms')
         return HttpResponse(response_json, content_type="application/json")
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class MultiLaneSelectionView(View):
+    """
+    View to find signal groups along a given route (multiple lanes).
+    """
+    
+    def post(self, request, *args, **kwargs):
+        """
+        Handle the POST request.
+        
+        The body of the POST request should contain the route as follows:
+        {
+            "route": [
+                { "lon": <longitude>, "lat": <latitude>, "alt": <altitude> },
+                ...
+            ]
+        }
+        """
+        
+        logging.debug(f"Received multi lane sg selection request with body: {request.body}")
+
+        try:
+            route_linestring = RouteJsonValidator(request.body).validate(proj=settings.LONLAT)
+        except ValidationError as e:
+            return JsonResponse({"error": str(e)})
+        
+        params = request.GET
+        bearing_diff = int(params.get("bearingDiff", 30))
+        distance_to_route = int(params.get("distanceToRoute", 20))
+        
+        # If the route is too short, don't perform matching.
+        if len(route_linestring.coords) < 2:
+            return JsonResponse({"error": "Not enough waypoints in the route."})
+        
+        matched_unordered_sgs = MultiLaneMatcher(route_linestring).match(distance_to_route, bearing_diff)
+                
+        # Snap the SG positions to the route and get their distances on the route
+        sg_distances_on_route = get_sg_distances_on_route(matched_unordered_sgs, route_linestring)
+        sg_distances_on_route.sort(key=lambda x: x["distanceOnRoute"])
+        
+        # Snap the disconnected crossings to the route and get their distances on the route
+        crossings = LSACrossing.objects.filter(point__dwithin=(route_linestring, D(m=distance_to_route)))
+        crossings_distances_on_route = get_crossing_distances_on_route(crossings, route_linestring)
+        crossings_distances_on_route.sort(key=lambda x: x["distanceOnRoute"])
+
+         # Serialize the data
+        response_json = json.dumps({
+            "signalGroups": sg_distances_on_route,
+            "crossings": crossings_distances_on_route,
+        }, indent=2 if settings.DEBUG else None, ensure_ascii=False)
+        
+        return HttpResponse(response_json, content_type="application/json")
+        
+        
+        
