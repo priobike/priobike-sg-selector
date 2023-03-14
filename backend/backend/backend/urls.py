@@ -20,4 +20,5 @@ if settings.DEBUG:
         path('projection_vis/', include('projection_vis.urls')),
         path('ml_evaluation/', include('ml_evaluation.urls')),
         path('demo/', include('demo.urls')),
+        path('multi_lane_analyzer/', include('multi_lane_analyzer.urls')),
     ]
