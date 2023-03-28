@@ -43,7 +43,8 @@ def get_matches(route: LineString, matchers: List[RouteMatcher]) -> Iterable[LSA
     """
     Return all LSA's that match the route.
     """
-    matched_lsas = LSA.objects.all()
+    # Only consider LSA's that are also for cyclists
+    matched_lsas = LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer")
     for matcher in matchers:
         matched_lsas, _ = matcher.matches(matched_lsas, route)
     return matched_lsas
