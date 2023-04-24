@@ -30,7 +30,7 @@ def get_routes_with_bindings(route_data):
         
     # To get the remaining routes we look at the .json-files in the bindings-directory.
     if route_data == "osm":
-        bindings_dir = "../data/bindings/"
+        bindings_dir = "../data/bindings_osm/"
     elif route_data == "drn":
         bindings_dir = "../data/bindings_drn/"
 

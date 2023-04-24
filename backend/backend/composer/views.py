@@ -111,7 +111,7 @@ class RouteBindingResource(View):
         
         # Dump the bindings    
         if map_data == "osm":
-            with open(f"../data/bindings/{route.id}.json", "w") as f:
+            with open(f"../data/bindings_osm/{route.id}.json", "w") as f:
                 f.write(serialize("json", bindings, indent=2))
         elif map_data == "drn":
             with open(f"../data/bindings_drn/{route.id}.json", "w") as f:
@@ -354,7 +354,7 @@ class HealthCheckBindingFiles(View):
         error_bindings = []
         
         if map_data == "osm":
-            bindings_dir = "../data/bindings/"
+            bindings_dir = "../data/bindings_osm/"
         elif map_data == "drn":
             bindings_dir = "../data/bindings_drn/"
         else:
@@ -400,7 +400,7 @@ class HealthCheckBindingsDatabase(View):
         error_bindings = []
 
         if map_data == "osm":
-            bindings_dir = "../data/bindings/"
+            bindings_dir = "../data/bindings_osm/"
         elif map_data == "drn":
             bindings_dir = "../data/bindings_drn/"
         else:
