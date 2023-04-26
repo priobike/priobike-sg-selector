@@ -21,8 +21,8 @@ class Command(BaseCommand):
 
             duplicate = False
             
-            for binding in original_bindings:
-                if binding_system_projected.equals(binding):
+            for binding_linestring in original_bindings:
+                if binding_system_projected.equals(binding_linestring):
                     duplicate = True
                     duplicate_bindings.append(binding_system_projected)
                     break

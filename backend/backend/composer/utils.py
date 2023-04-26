@@ -55,6 +55,9 @@ def check_binding_exists(projected_lsa_linestring: LineString, projected_lsa_lin
         settings.LONLAT, clone=True)
 
     for binding in existing_bindings:
+        if projected_lsa_linestring_id != binding.lsa.id:
+            continue
+        
         projected_binding_lsa_linestring = project_onto_route(
             binding.lsa.geometry.transform(settings.LONLAT, clone=True),
             binding.route.geometry.transform(settings.LONLAT, clone=True))
@@ -62,7 +65,7 @@ def check_binding_exists(projected_lsa_linestring: LineString, projected_lsa_lin
         system_projected_binding_lsa_linestring = projected_binding_lsa_linestring.transform(
             settings.LONLAT, clone=True)
 
-        if system_projected_lsa_linestring.equals(system_projected_binding_lsa_linestring) and projected_lsa_linestring_id == binding.lsa.id:
+        if system_projected_lsa_linestring.equals(system_projected_binding_lsa_linestring):
             print("\nDuplicate ID:")
             print(binding.lsa.id)
             return True

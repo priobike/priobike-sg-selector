@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 
 class Command(BaseCommand):
-    logs_path = "routing/composer/logs/"
+    logs_path = "composer/logs/"
 
     def add_arguments(self, parser):
         # Add an argument to the parser that
@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
             if not duplicates:
                 routes_with_no_duplicates.append(route)
-                with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}/routes_with_no_duplicates_in_bindings_of_routes_before_{first_route_id}/{str(route.id)}.json"), 'w') as fp:
+                with open(os.path.join(settings.BASE_DIR, f"{self.logs_path}routes_with_no_duplicates_in_bindings_of_routes_before_{first_route_id}/{str(route.id)}.json"), 'w') as fp:
                     json.dump({"route_id": route.id}, fp, indent=4)
 
         print(routes_with_no_duplicates)
