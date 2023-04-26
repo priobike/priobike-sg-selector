@@ -158,7 +158,7 @@ class Command(BaseCommand):
         } """
         
         strategies = {
-            "topological": TopologicHypermodelMatcher,
+            "topological-osm-updated": TopologicHypermodelMatcher,
         }
 
         processes = []
