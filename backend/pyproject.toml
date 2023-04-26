@@ -25,7 +25,8 @@ seaborn = "0.11.2"
 pandas = "1.4.3" 
 matplotlib-venn = "0.11.7"
 scikit-optimize = "0.9.0"
-hyperopt = "0.2.7" 
+hyperopt = "0.2.7"
+sqlalchemy = "1.4.46"
 
 [tool.poetry.dev-dependencies]
 
