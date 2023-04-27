@@ -1,14 +1,14 @@
 {
   "params": {
-    "search_radius_m": 20,
-    "bearing_threshold": 0.7214723279745264,
-    "bearing_diff_threshold": 52.076637851854706,
+    "search_radius_m": 19,
+    "bearing_threshold": 0.7799310253830564,
+    "bearing_diff_threshold": 49.55047125343691,
     "match_inverted_bearings": false,
-    "length_threshold": 0.8839702965553159,
-    "length_diff_threshold": 0.9384524337631008,
-    "road_side_threshold": 96.62546678368454,
-    "perfect_match_threshold": 46.985888123148044,
-    "overlap_pct_threshold": 0.04432709374839369
+    "length_threshold": 0.7730539967144467,
+    "length_diff_threshold": 0.9636664063380954,
+    "road_side_threshold": 94.85748955587489,
+    "perfect_match_threshold": 46.33809290752263,
+    "overlap_pct_threshold": 0.053229132324279345
   },
-  "f1": 0.8596153846153847
+  "f1": 0.871763255240444
 }
