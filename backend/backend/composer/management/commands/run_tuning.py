@@ -128,7 +128,8 @@ class Command(BaseCommand):
                 if len(SELECTED_METRICS) == 1 and len(batch) == n_routes_per_batch:
                     metric_name = SELECTED_METRICS[0]
                     metric = METRICS[metric_name]
-                    trial.report(metric(batch_tp, batch_fp, batch_fn), batch_idx)
+                    trial.report(
+                        metric(batch_tp, batch_fp, batch_fn), batch_idx)
 
                     if trial.should_prune():
                         raise optuna.TrialPruned()
@@ -146,7 +147,7 @@ class Command(BaseCommand):
                 results.append(total_metric)
             return results
 
-        study.optimize(objective, timeout=60 * 600) # 10 hours
+        study.optimize(objective, timeout=60 * 600)  # 10 hours
 
     def handle(self, *args, **options):
         print("Tuning the matching algorithms...")
@@ -156,20 +157,17 @@ class Command(BaseCommand):
             "strict-shortest-path": StrictShortestPathHypermodelMatcher,
             "probabilistic": ProbabilisticHypermodelMatcher,
         } """
-        
+
         strategies = {
-            "topological-osm-updated": TopologicHypermodelMatcher,
+            "topological-drn-updated": TopologicHypermodelMatcher,
         }
 
         processes = []
         for strategy, hypermodel_cls in strategies.items():
             print(f"Tuning {strategy}...")
-            p = Process(target=self.search_best_configuration, args=(hypermodel_cls, strategy))
+            p = Process(target=self.search_best_configuration,
+                        args=(hypermodel_cls, strategy))
             p.start()
             processes.append(p)
         for p in processes:
             p.join()
-
-
-
-
