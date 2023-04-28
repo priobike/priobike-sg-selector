@@ -29,6 +29,9 @@ hyperopt = "0.2.7"
 sqlalchemy = "1.4.46"
 
 [tool.poetry.dev-dependencies]
+jupyter = "1.0.0"
+ipython = "8.12.0"
+django-extensions = "3.2.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

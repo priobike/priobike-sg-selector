@@ -237,7 +237,7 @@ class Command(BaseCommand):
         
         # Add strategies that should be analyized.
         # strategies = {"ml-drn": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ]}
-        strategies = {"topo": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.drn.json') ]}
+        strategies = {"topo": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.drn.updated.json') ]}
 
         runs = []
         for strategy_name, strategy in strategies.items():
