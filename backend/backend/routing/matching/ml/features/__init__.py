@@ -1,7 +1,6 @@
 from typing import List
 import time
 from routing.matching.ml.features.types import Timing
-from composer.models import Route
 
 import numpy as np
 from django.conf import settings
@@ -18,7 +17,6 @@ class FeatureExtractionState:
         lsa_system_linestring: LineString,
         lsa_projected_linestring: LineString,
         lsa_extended_projected_linestring: LineString,
-        route: Route,
         route_system_linestring: LineString,
         config: map,
         feature_timing_sums: List[Timing],
@@ -33,7 +31,6 @@ class FeatureExtractionState:
         self.lsa_system_linestring = lsa_system_linestring
         self.lsa_projected_linestring = lsa_projected_linestring
         self.lsa_extended_projected_linestring = lsa_extended_projected_linestring
-        self.route = route
         self.route_system_linestring = route_system_linestring
         self.config = config
         self.feature_timing_sums = feature_timing_sums
@@ -175,7 +172,6 @@ def get_features(lsa: LSA, route_linestring: LineString, config):
         lsa_system_linestring=system_lsa_linestring,
         lsa_projected_linestring=projected_lsa_linestring,
         lsa_extended_projected_linestring=extended_projected_linestring,
-        route=None,
         route_system_linestring=system_route_linestring,
         config=config,
         feature_timing_sums=feature_timing_sums

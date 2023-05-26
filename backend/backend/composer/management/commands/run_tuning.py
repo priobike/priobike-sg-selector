@@ -1,4 +1,3 @@
-import json
 from multiprocessing import Process
 from time import perf_counter
 import random

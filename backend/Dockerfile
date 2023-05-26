@@ -63,6 +63,7 @@ FROM builder AS test
 CMD "./run-test.sh"
 
 FROM builder AS dev
+ENV DJANGO_DEBUG_MODE=True
 # Run the development server
 RUN ./run-preheating-dev.sh
 HEALTHCHECK --interval=60s --timeout=10s --retries=5 --start-period=10s \
@@ -70,6 +71,7 @@ HEALTHCHECK --interval=60s --timeout=10s --retries=5 --start-period=10s \
 CMD "./run-dev.sh"
 
 FROM builder AS production
+ENV DJANGO_DEBUG_MODE=False
 # Preheat our database, by running migrations and pre-loading data
 RUN ./run-preheating-prod.sh
 HEALTHCHECK --interval=60s --timeout=10s --retries=5 --start-period=10s \

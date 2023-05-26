@@ -1,9 +1,4 @@
 from enum import Enum
-from typing import List
-from django.contrib.gis.geos import LineString
-from composer.models import Route
-
-from routing.models import LSA
 
 
 class FeatureType(Enum):
