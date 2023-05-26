@@ -1,6 +1,7 @@
 import json
 from multiprocessing import Process
 from time import perf_counter
+import random
 
 import optuna
 from composer.models import Route, RouteLSABinding
@@ -79,8 +80,9 @@ class Command(BaseCommand):
 
             routes_with_bindings = Route.objects \
                 .filter(bound_lsas__isnull=False) \
-                .distinct() \
-                .order_by("?")
+                .distinct()
+                
+            random.shuffle(routes_with_bindings)
 
             def make_batch_generator(n_routes_per_batch):
                 batch_idx = 0
