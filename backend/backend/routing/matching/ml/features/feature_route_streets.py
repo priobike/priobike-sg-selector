@@ -182,7 +182,7 @@ class RouteStreets(FeatureExtractor):
         """
 
         if response.status_code != 200:
-            print(f'Route_id: {featureExtractionState.route.id}, LSA_id: {featureExtractionState.lsa.id} - Error during map matching process for "feature_route_streets.py".\nStatus code: {response.status_code}\nMessage: {response.json()}')
+            print(f'LSA_id: {featureExtractionState.lsa.id} - Error during map matching process for "feature_route_streets.py".\nStatus code: {response.status_code}\nMessage: {response.json()}')
             featureExtractionState.features = np.append(
                 featureExtractionState.features, [0, 1])
         elif "street_name" not in response.json()["paths"][0]["details"]:
