@@ -99,6 +99,7 @@ class Command(BaseCommand):
 
             total_tp, total_fp, total_fn = 0, 0, 0
             total_duration = 0
+
             n_routes_per_batch = 10
             for batch_idx, batch in enumerate(make_batch_generator(n_routes_per_batch)):
                 print(f"Study {name} processing batch {batch_idx}...")
