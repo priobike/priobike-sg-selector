@@ -1,6 +1,7 @@
 import json
 from multiprocessing import Process
 from time import perf_counter
+import random
 
 import optuna
 from composer.models import Route, RouteLSABinding
@@ -77,14 +78,15 @@ class Command(BaseCommand):
             trial_config = hypermodel_cls.get_trial_config(trial)
             matcher = hypermodel_cls(trial_config)
 
-            routes_with_bindings = Route.objects \
+            routes_with_bindings = list(Route.objects \
                 .filter(bound_lsas__isnull=False) \
-                .distinct() \
-                .order_by("?")
+                .distinct())
+                
+            random.shuffle(routes_with_bindings)
 
             def make_batch_generator(n_routes_per_batch):
                 batch_idx = 0
-                n_routes = routes_with_bindings.count()
+                n_routes = len(routes_with_bindings)
                 while True:
                     batch_start = batch_idx * n_routes_per_batch
                     batch_end = batch_start + n_routes_per_batch
@@ -137,7 +139,7 @@ class Command(BaseCommand):
                 total_fn += batch_fn
                 total_duration += batch_duration
 
-            duration_per_route = total_duration / routes_with_bindings.count()
+            duration_per_route = total_duration / len(routes_with_bindings)
             print(f"Study {name} finished processing batches - TP: {total_tp}, FP: {total_fp}, FN: {total_fn}, Duration per Route: {duration_per_route}")
             results = []
             for metric in SELECTED_METRICS:
