@@ -18,7 +18,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-hamburg
-      branch: ${{ github.ref }}
+      branch: ${{ github.ref_name }}
       api: https://tld.iot.hamburg.de/v1.1
       filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
     secrets:
@@ -31,7 +31,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-sachsen
-      branch: ${{ github.ref }}
+      branch: ${{ github.ref_name }}
       api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
       filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
     secrets:

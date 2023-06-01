@@ -10,4 +10,4 @@ jobs:
   test:
     uses: ./.github/workflows/test.yaml
     with: 
-      branch: ${{ github.ref }}
+      branch: ${{ github.ref_name }}
