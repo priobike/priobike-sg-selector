@@ -18,7 +18,7 @@ jobs:
       image: ${{ github.repository }}-hamburg
       branch: main
       api: https://tld.iot.hamburg.de/v1.1
-      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+      filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
       NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
@@ -31,7 +31,7 @@ jobs:
       image: ${{ github.repository }}-sachsen
       branch: main
       api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
-      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+      filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
       NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
@@ -44,7 +44,7 @@ jobs:
       image: ${{ github.repository }}-hamburg
       branch: stable
       api: https://tld.iot.hamburg.de/v1.1
-      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+      filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
       NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
@@ -57,7 +57,7 @@ jobs:
       image: ${{ github.repository }}-sachsen
       branch: stable
       api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
-      filter: "%28%28Datastreams%2Fproperties%2FserviceName+eq+%27HH_STA_traffic_lights%27%29+and+%28%28properties%2FlaneType+eq+%27Radfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27KFZ%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Fußgänger%2FRadfahrer%27%29+or+%28%28properties%2FlaneType+eq+%27Bus%2FRadfahrer%27%29+or+%28properties%2FlaneType+eq+%27KFZ%2FBus%2FRadfahrer%27%29%29%29%29%29%29"
+      filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
       NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
