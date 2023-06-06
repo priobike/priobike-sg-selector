@@ -42,7 +42,7 @@ def get_routes_with_bindings(route_data):
         id for id in files if id >= every_route_looked_up_to]
     relevant_routes_2 = Route.objects.filter(id__in=relevant_routes_2_ids)
 
-    return chain(relevant_routes_1, relevant_routes_2)
+    return list(chain(relevant_routes_1, relevant_routes_2))
 
 def check_binding_exists(projected_lsa_linestring: LineString, projected_lsa_linestring_id: str, existing_bindings: List[RouteLSABinding]) -> bool:
     """Checks if the given projected lsa linestring already exists in the existing bindings
