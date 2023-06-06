@@ -24,15 +24,17 @@ def get_routes_with_bindings(route_data):
     relevant_routes_1 = Route.objects.filter(
         id__range=(0, every_route_looked_up_to - 1))
     
-    if route_data != "osm" and route_data != "drn":
+    if route_data != "osm" and route_data != "drn" and route_data != "osm_old":
             raise Exception(
-                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+                "Please provide a valid value for the route_data option ('osm' or 'drn' or 'osm_old').")
         
     # To get the remaining routes we look at the .json-files in the bindings-directory.
     if route_data == "osm":
         bindings_dir = "../data/bindings_osm/"
     elif route_data == "drn":
         bindings_dir = "../data/bindings_drn/"
+    elif route_data == "osm_old":
+        bindings_dir = "../data/bindings/"
 
     files = [int(f.replace(".json", "")) for f in os.listdir(
         bindings_dir) if os.path.isfile(os.path.join(bindings_dir, f))]
@@ -40,7 +42,7 @@ def get_routes_with_bindings(route_data):
         id for id in files if id >= every_route_looked_up_to]
     relevant_routes_2 = Route.objects.filter(id__in=relevant_routes_2_ids)
 
-    return list(chain(relevant_routes_1, relevant_routes_2))
+    return chain(relevant_routes_1, relevant_routes_2)
 
 def check_binding_exists(projected_lsa_linestring: LineString, projected_lsa_linestring_id: str, existing_bindings: List[RouteLSABinding]) -> bool:
     """Checks if the given projected lsa linestring already exists in the existing bindings
