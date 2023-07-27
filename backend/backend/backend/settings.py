@@ -52,7 +52,8 @@ if DEBUG:
         'jiggle_vis',
         'projection_vis',
         'ml_evaluation',
-        'demo'
+        'demo',
+        'multi_lane_analyzer',
     ]
 
 MIDDLEWARE = [
