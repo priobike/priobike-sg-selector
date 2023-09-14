@@ -152,7 +152,7 @@ class Command(BaseCommand):
                 "Please provide a valid value for the route_data option ('osm' or 'drn').")
             
         if route_data == "osm":
-            bindings_dir = "../data/bindings/"
+            bindings_dir = "../data/bindings_osm/"
             logs_path = "ml_evaluation/logs_osm/dataset_with_features/"
             log_file_prefix = "logs_osm_generate_dataset_config_feature_and_data_id_"
             data_file_path_and_prefix = "../backend/ml_evaluation/datasets_osm/dataset_osm_data_and_features_config_id_"

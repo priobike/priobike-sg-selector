@@ -32,7 +32,7 @@ class Command(BaseCommand):
                 "Please provide a valid value for the route_data option ('osm' or 'drn').")
             
         if route_data == "osm":
-            bindings_dir = "../data/bindings/"
+            bindings_dir = "../data/bindings_osm/"
         elif route_data == "drn":
             bindings_dir = "../data/bindings_drn/"
 

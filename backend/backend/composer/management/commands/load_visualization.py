@@ -29,7 +29,7 @@ class Command(BaseCommand):
             waypoints = []
 
             crossings = defaultdict(float)
-            for lsa in tqdm(LSA.objects.all(), desc="Loading visualization models"):
+            for lsa in tqdm(LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer"), desc="Loading visualization models"):
                 crossing_id = lsa.lsametadata.traffic_lights_id
                 crossing_height = crossings[crossing_id]
                 crossings[crossing_id] += self.height_difference

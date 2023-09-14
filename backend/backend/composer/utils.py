@@ -24,15 +24,17 @@ def get_routes_with_bindings(route_data):
     relevant_routes_1 = Route.objects.filter(
         id__range=(0, every_route_looked_up_to - 1))
     
-    if route_data != "osm" and route_data != "drn":
+    if route_data != "osm" and route_data != "drn" and route_data != "osm_old":
             raise Exception(
-                "Please provide a valid value for the route_data option ('osm' or 'drn').")
+                "Please provide a valid value for the route_data option ('osm' or 'drn' or 'osm_old').")
         
     # To get the remaining routes we look at the .json-files in the bindings-directory.
     if route_data == "osm":
-        bindings_dir = "../data/bindings/"
+        bindings_dir = "../data/bindings_osm/"
     elif route_data == "drn":
         bindings_dir = "../data/bindings_drn/"
+    elif route_data == "osm_old":
+        bindings_dir = "../data/bindings/"
 
     files = [int(f.replace(".json", "")) for f in os.listdir(
         bindings_dir) if os.path.isfile(os.path.join(bindings_dir, f))]
@@ -55,6 +57,9 @@ def check_binding_exists(projected_lsa_linestring: LineString, projected_lsa_lin
         settings.LONLAT, clone=True)
 
     for binding in existing_bindings:
+        if projected_lsa_linestring_id != binding.lsa.id:
+            continue
+        
         projected_binding_lsa_linestring = project_onto_route(
             binding.lsa.geometry.transform(settings.LONLAT, clone=True),
             binding.route.geometry.transform(settings.LONLAT, clone=True))
@@ -62,7 +67,7 @@ def check_binding_exists(projected_lsa_linestring: LineString, projected_lsa_lin
         system_projected_binding_lsa_linestring = projected_binding_lsa_linestring.transform(
             settings.LONLAT, clone=True)
 
-        if system_projected_lsa_linestring.equals(system_projected_binding_lsa_linestring) and projected_lsa_linestring_id != binding.lsa.id:
+        if system_projected_lsa_linestring.equals(system_projected_binding_lsa_linestring):
             print("\nDuplicate ID:")
             print(binding.lsa.id)
             return True
