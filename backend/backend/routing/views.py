@@ -279,7 +279,7 @@ class LSASelectionView(View):
         if matcher == "ml":
             unordered_lsas = get_matches(route_linestring, [ ProximityMatcher(search_radius_m=20), MLMatcher(usedRouting) ]) 
         elif matcher == "legacy":
-            unordered_lsas = get_matches(route_linestring, [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.{usedRouting}.json') ])
+            unordered_lsas = get_matches(route_linestring, [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.{usedRouting}.updated.json') ])
         else:
             return JsonResponse({"error": "Unsupported value provided for the parameter 'matcher'. Choose between 'ml' or 'legacy'."})
 
