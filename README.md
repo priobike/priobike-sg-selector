@@ -4,6 +4,31 @@
 
 With the signal group (sg) selector service, it is possible to match traffic lights to routes. This is done by matching linestring geometries (MAP topologies) of traffic lights to the route geometry. In our application we often use the term LSA synonymously for SG/Traffic Light. LSA means Lichtsignalanlage in German.
 
+## Citing
+
+If you (re)use our work, please cite both papers:
+
+```bibtex
+@inproceedings{matthes2022matching,
+  title={Matching Traffic Lights to Routes for Real-World Deployments of Mobile GLOSA Apps},
+  author={Matthes, Philipp and Springer, Thomas},
+  booktitle={2022 IEEE International Smart Cities Conference (ISC2)},
+  pages={1--7},
+  year={2022},
+  doi={10.1109/ISC255366.2022.9922560},
+  organization={IEEE}
+}
+@inproceedings{matthes2023geo,
+  title={GeoAI-Powered Lane Matching for Bike Routes in GLOSA Apps},
+  author={Matthes, Philipp and Springer, Thomas and Daniel, Jeschor},
+  booktitle={The 31st ACM International Conference on Advances in Geographic Information Systems (SIGSPATIAL '23)},
+  pages={1--4},
+  year={2023},
+  doi={10.1145/3589132.3625583},
+  organization={ACM}
+}
+```
+
 ## Algorithmic Selection
 
 ![algorithm](https://user-images.githubusercontent.com/27271818/211346186-c9f262fb-7271-4b3b-8bf7-fae42c19e4a4.png)
@@ -211,18 +236,3 @@ The `routing`-subcomponent ([`backend/backend/routing`](backend/backend/routing)
 ## Anything unclear?
 
 Help us improving this documentation. If you have any problems or unclarities, feel free to open an issue.
-
-## Citing
-
-If you (re)use our work, please cite us:
-
-```bibtex
-@inproceedings{matthes2022matching,
-  title={Matching Traffic Lights to Routes for Real-World Deployments of Mobile GLOSA Apps},
-  author={Matthes, Philipp and Springer, Thomas},
-  booktitle={2022 IEEE International Smart Cities Conference (ISC2)},
-  pages={1--7},
-  year={2022},
-  organization={IEEE}
-}
-```
