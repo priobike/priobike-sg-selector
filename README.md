@@ -20,7 +20,7 @@ If you (re)use our work, please cite both papers:
 }
 @inproceedings{matthes2023geo,
   title={GeoAI-Powered Lane Matching for Bike Routes in GLOSA Apps},
-  author={Matthes, Philipp and Springer, Thomas and Daniel, Jeschor},
+  author={Matthes, Philipp and Springer, Thomas and Jeschor, Daniel},
   booktitle={The 31st ACM International Conference on Advances in Geographic Information Systems (SIGSPATIAL '23)},
   pages={1--4},
   year={2023},
