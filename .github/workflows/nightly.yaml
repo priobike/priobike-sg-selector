@@ -61,3 +61,29 @@ jobs:
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
       NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
+
+  publish-hamburg-release:
+    needs: test
+    uses: ./.github/workflows/publish.yaml
+    with:
+      registry: bikenow.vkw.tu-dresden.de
+      image: ${{ github.repository }}-hamburg
+      branch: release
+      api: https://tld.iot.hamburg.de/v1.1
+      filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+      NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
+
+  publish-sachsen-release:
+    needs: test
+    uses: ./.github/workflows/publish.yaml
+    with:
+      registry: bikenow.vkw.tu-dresden.de
+      image: ${{ github.repository }}-sachsen
+      branch: release
+      api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
+      filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+      NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
