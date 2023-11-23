@@ -39,7 +39,7 @@ EXPOSE 8000
 COPY . /code
 
 # Define the FROST API from which we will fetch the things
-ARG FROST_API=https://tld.iot.hamburg.de/v1.1
+ARG FROST_API=https://priobike.vkw.tu-dresden.de/production/priobike-frost-mirror/FROST-Server/v1.1
 ARG FROST_FILTER=%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29
 
 ENV FROST_API=$FROST_API
