@@ -26,9 +26,8 @@ WORKDIR /code
 # Install Python dependencies separated from the
 # run script to enable Docker caching
 ADD pyproject.toml /code
-# Get build arg that specifies whether dev dependencies should be installed
-ARG INSTALL_DEV_DEPENDENCIES=false
-RUN if [ $INSTALL_DEV_DEPENDENCIES = true ] ; then poetry install --no-interaction --no-ansi; else poetry install --no-interaction --no-ansi --no-dev; fi
+# Install all dependencies
+RUN poetry install
 
 # Install CURL for healthcheck
 RUN apt-get install -y curl
