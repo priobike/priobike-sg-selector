@@ -1,0 +1,771 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218527710539348,
+            53.48492891717866,
+            6.326046070114189
+          ],
+          [
+            10.218349,
+            53.485028,
+            6.14
+          ],
+          [
+            10.217915303259899,
+            53.48521712021781,
+            6.687453262093881
+          ]
+        ]
+      },
+      "properties": {
+        "type": "route_section",
+        "stroke": "black",
+        "stroke-width": 4,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              10.217912221178969,
+              53.4850236
+            ],
+            [
+              10.217912221178969,
+              53.48519850000001
+            ],
+            [
+              10.217916536398041,
+              53.48522457015221
+            ],
+            [
+              10.217929316223813,
+              53.48524963842799
+            ],
+            [
+              10.217950069534746,
+              53.48527274147014
+            ],
+            [
+              10.217977998792737,
+              53.4852929914456
+            ],
+            [
+              10.21801203069207,
+              53.485309610163746
+            ],
+            [
+              10.218050857405931,
+              53.48532195898116
+            ],
+            [
+              10.218092986845484,
+              53.485329563343576
+            ],
+            [
+              10.2181368,
+              53.48533213102223
+            ],
+            [
+              10.2183693,
+              53.48533213102223
+            ],
+            [
+              10.218413113154515,
+              53.485329563343576
+            ],
+            [
+              10.218455242594068,
+              53.48532195898116
+            ],
+            [
+              10.218494069307932,
+              53.485309610163746
+            ],
+            [
+              10.21852810120726,
+              53.4852929914456
+            ],
+            [
+              10.218556030465253,
+              53.48527274147014
+            ],
+            [
+              10.218576783776184,
+              53.48524963842799
+            ],
+            [
+              10.218589563601956,
+              53.48522457015221
+            ],
+            [
+              10.21859387882103,
+              53.48519850000001
+            ],
+            [
+              10.21859387882103,
+              53.4850236
+            ],
+            [
+              10.218589563601956,
+              53.48499752972427
+            ],
+            [
+              10.218576783776184,
+              53.48497246129951
+            ],
+            [
+              10.218556030465253,
+              53.48494935809383
+            ],
+            [
+              10.21852810120726,
+              53.48492910795432
+            ],
+            [
+              10.218494069307932,
+              53.48491248908711
+            ],
+            [
+              10.218455242594068,
+              53.48490014015049
+            ],
+            [
+              10.218413113154515,
+              53.48489253571109
+            ],
+            [
+              10.2183693,
+              53.484889968005824
+            ],
+            [
+              10.2181368,
+              53.484889968005824
+            ],
+            [
+              10.218092986845484,
+              53.48489253571109
+            ],
+            [
+              10.218050857405931,
+              53.48490014015049
+            ],
+            [
+              10.21801203069207,
+              53.48491248908711
+            ],
+            [
+              10.217977998792737,
+              53.48492910795432
+            ],
+            [
+              10.217950069534746,
+              53.48494935809383
+            ],
+            [
+              10.217929316223813,
+              53.48497246129951
+            ],
+            [
+              10.217916536398041,
+              53.48499752972427
+            ],
+            [
+              10.217912221178969,
+              53.4850236
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "type": "crossing_bound",
+        "fill-opacity": 0.1,
+        "stroke": "black",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218274499999998,
+            53.485023600000005
+          ],
+          [
+            10.2183672,
+            53.48508859999997
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183672,
+            53.48508859999997
+          ],
+          [
+            10.217915303259899,
+            53.48521712021781
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183672,
+            53.48508859999997
+          ],
+          [
+            10.2183672,
+            53.48508859999997
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183672,
+            53.48508859999997
+          ],
+          [
+            10.2183693,
+            53.48509279999999
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183672,
+            53.48508859999997
+          ],
+          [
+            10.218136799999998,
+            53.48519850000001
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183672,
+            53.48508859999997
+          ],
+          [
+            10.218274499999998,
+            53.485023600000005
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218274499999998,
+            53.485023600000005
+          ],
+          [
+            10.217915303259899,
+            53.48521712021781
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218274499999998,
+            53.485023600000005
+          ],
+          [
+            10.218274499999998,
+            53.485023600000005
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218274499999998,
+            53.485023600000005
+          ],
+          [
+            10.2183693,
+            53.48509279999999
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218274499999998,
+            53.485023600000005
+          ],
+          [
+            10.218136799999998,
+            53.48519850000001
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183693,
+            53.48509279999999
+          ],
+          [
+            10.218136799999998,
+            53.48519850000001
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218136799999998,
+            53.48519850000001
+          ],
+          [
+            10.217915303259899,
+            53.48521712021781
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218136799999998,
+            53.48519850000001
+          ],
+          [
+            10.218274499999998,
+            53.485023600000005
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218136799999998,
+            53.48519850000001
+          ],
+          [
+            10.2183672,
+            53.48508859999997
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218136799999998,
+            53.48519850000001
+          ],
+          [
+            10.218136799999998,
+            53.48519850000001
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218136799999998,
+            53.48519850000001
+          ],
+          [
+            10.2183693,
+            53.48509279999999
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183693,
+            53.48509279999999
+          ],
+          [
+            10.217915303259899,
+            53.48521712021781
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183693,
+            53.48509279999999
+          ],
+          [
+            10.218274499999998,
+            53.485023600000005
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183693,
+            53.48509279999999
+          ],
+          [
+            10.2183672,
+            53.48508859999997
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183693,
+            53.48509279999999
+          ],
+          [
+            10.2183693,
+            53.48509279999999
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.218527710539348,
+            53.48492891717866
+          ],
+          [
+            10.217915303259899,
+            53.48521712021781
+          ]
+        ]
+      },
+      "properties": {
+        "type": "graph_edge",
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2182745,
+            53.4850236
+          ],
+          [
+            10.2183672,
+            53.4850886
+          ]
+        ]
+      },
+      "properties": {
+        "type": "lsa_no_match",
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183672,
+            53.4850886
+          ],
+          [
+            10.2182745,
+            53.4850236
+          ]
+        ]
+      },
+      "properties": {
+        "type": "lsa_no_match",
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183693,
+            53.4850928
+          ],
+          [
+            10.2181368,
+            53.4851985
+          ]
+        ]
+      },
+      "properties": {
+        "type": "lsa_no_match",
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2181368,
+            53.4851985
+          ],
+          [
+            10.2183693,
+            53.4850928
+          ]
+        ]
+      },
+      "properties": {
+        "type": "lsa_no_match",
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.2183693,
+            53.4850928
+          ],
+          [
+            10.2181368,
+            53.4851985
+          ]
+        ]
+      },
+      "properties": {
+        "type": "lsa_match",
+        "stroke": "#00ff00",
+        "stroke-width": 4,
+        "stroke-opacity": 1
+      }
+    }
+  ]
+}

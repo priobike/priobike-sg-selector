@@ -17,6 +17,7 @@ from django.views.generic import View
 from routing.matching import get_matches
 from routing.matching.bearing import get_bearing
 from routing.matching.hypermodel import (DijkstraHypermodelMatcher,
+                                         StrictDijkstraHypermodelMatcher,
                                          TopologicHypermodelMatcher)
 from routing.matching.ml.matcher import MLMatcher
 from routing.matching.projection import project_onto_route
@@ -284,6 +285,8 @@ class LSASelectionView(View):
             unordered_lsas = get_matches(route_linestring, [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.{usedRouting}.updated.json') ])
         elif matcher == "dijkstra":
             unordered_lsas = get_matches(route_linestring, [ ProximityMatcher(search_radius_m=20), DijkstraHypermodelMatcher.from_config_file('config/shortest-path.hypermodel.json') ]) 
+        elif matcher == "strict-dijkstra":
+            unordered_lsas = get_matches(route_linestring, [ ProximityMatcher(search_radius_m=20), StrictDijkstraHypermodelMatcher.from_config_file('config/strict-shortest-path.hypermodel.json') ])
         else:
             return JsonResponse({"error": "Unsupported value provided for the parameter 'matcher'. Choose between 'ml' or 'legacy'."})
 

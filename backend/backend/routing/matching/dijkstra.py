@@ -52,6 +52,8 @@ class DijkstraMatcher(RouteMatcher):
     more false positives and less false negatives than the strict dijkstra matcher.
     """
 
+    strict = False
+
     def __init__(self, crossing_padding=20, offlsa_penalty=2, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.crossing_padding = crossing_padding
@@ -79,7 +81,7 @@ class DijkstraMatcher(RouteMatcher):
         graph, edges_coords = self.create_graph(crossing_lsas, route_section)
         shortest_path = dijkstra(graph, "start", "end")
 
-        _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_lsas, crossing_lsas.filter(id__in=shortest_path[1:-1]), "testroute", edges_coords)
+        _write_debug_geojson(self.strict, route_section, crossing_id, crossing_bound, crossing_lsas, crossing_lsas.filter(id__in=shortest_path[1:-1]), "random-route", edges_coords)
 
         return shortest_path[1:-1] # Remove start and end
 
@@ -170,10 +172,14 @@ class StrictDijkstraMatcher(DijkstraMatcher):
     will presumably be lower, but the number of false negatives will be higher.
     """
 
+    strict = True
+
     def create_graph(self, lsas: List[LSA], route: Union[LineString, MultiLineString], system=settings.METRICAL):
         # The graph ist structured as: id -> [(id, cost)]
         # Note that id is "start" or "end" for the start and end node
         graph = defaultdict(list)
+
+        edges_coords = []
 
         system_route = route.transform(system, clone=True)
 
@@ -188,12 +194,16 @@ class StrictDijkstraMatcher(DijkstraMatcher):
             _1_distance_2 = system_route.distance(lsa_start_point) * self.offlsa_penalty
             _1_distance_3 = lsa_geometry.length
             graph["start"].append((lsa.id, _1_distance_1 + _1_distance_2 + _1_distance_3))
+            closest_point_on_route = system_route.interpolate_normalized(system_route.project_normalized(lsa_start_point))
+            edges_coords.append((closest_point_on_route, lsa_start_point))
 
             # 2. All lsas are connected to the route end point
             # Cost is: lsa_end_point -1> closest_point_on_route -2> route_end_point
             _2_distance_1 = lsa_end_point.distance(system_route) * self.offlsa_penalty
             _2_distance_2 = (system_route.length - system_route.project(lsa_end_point)) * self.offlsa_penalty
             graph[lsa.id].append(("end", _2_distance_1 + _2_distance_2))
+            closest_point_on_route = system_route.interpolate_normalized(system_route.project_normalized(lsa_end_point))
+            edges_coords.append((lsa_end_point, closest_point_on_route))
 
             for other_lsa in lsas:
                 if other_lsa == lsa:
@@ -209,22 +219,28 @@ class StrictDijkstraMatcher(DijkstraMatcher):
                 _3_distance_3 = system_route.distance(other_lsa_start_point) * self.offlsa_penalty
                 _3_distance_4 = other_lsa_geometry.length
 
-                graph[lsa.id].append((other_lsa.id, _3_distance_1 + _3_distance_2 + _3_distance_3 + _3_distance_4))      
+                graph[lsa.id].append((other_lsa.id, _3_distance_1 + _3_distance_2 + _3_distance_3 + _3_distance_4))
+                closest_point_on_route_1 = system_route.interpolate_normalized(system_route.project_normalized(lsa_end_point))
+                closest_point_on_route_2 = system_route.interpolate_normalized(system_route.project_normalized(other_lsa_start_point))
+                edges_coords.append((lsa_end_point, closest_point_on_route_1))
+                edges_coords.append((closest_point_on_route_1, closest_point_on_route_2))
+                edges_coords.append((closest_point_on_route_2, other_lsa_start_point))
 
         # The start point is connected to the end point
         # Cost is: route_start_point -> route_end_point
         graph["start"].append(("end", system_route.length * self.offlsa_penalty))
+        edges_coords.append((system_route.interpolate_normalized(0), system_route.interpolate_normalized(1)))
         
-        return graph
+        return graph, edges_coords
 
 
-def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_lsas, filtered_crossing_lsas, route_hash, edges_coords):
-
+def _write_debug_geojson(strict, route_section, crossing_id, crossing_bound, crossing_lsas, filtered_crossing_lsas, route_hash, edges_coords):
     features = [
         {
             "type": "Feature",
             "geometry": json.loads(route_section.transform(settings.LONLAT, clone=True).geojson),
             "properties": {
+                "type": "route_section",
                 "stroke": "black",
                 "stroke-width": 4,
                 "stroke-opacity": 1,
@@ -234,6 +250,7 @@ def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_ls
             "type": "Feature",
             "geometry": json.loads(crossing_bound.transform(settings.LONLAT, clone=True).geojson),
             "properties": {
+                "type": "crossing_bound",
                 "fill-opacity": 0.1,
                 "stroke": "black",
                 "stroke-width": 2,
@@ -255,6 +272,7 @@ def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_ls
                 ],
             },
             "properties": {
+                "type": "graph_edge",
                 "stroke": "#0000ff",
                 "stroke-width": 2,
                 "stroke-opacity": 1,
@@ -266,6 +284,7 @@ def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_ls
             "type": "Feature",
             "geometry": json.loads(lsa.geometry.transform(settings.LONLAT, clone=True).geojson),
             "properties": {
+                "type": "lsa_no_match",
                 "stroke": "#ff0000",
                 "stroke-width": 2,
                 "stroke-opacity": 1,
@@ -277,6 +296,7 @@ def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_ls
             "type": "Feature",
             "geometry": json.loads(lsa.geometry.transform(settings.LONLAT, clone=True).geojson),
             "properties": {
+                "type": "lsa_match",
                 "stroke": "#00ff00",
                 "stroke-width": 4,
                 "stroke-opacity": 1,
@@ -290,7 +310,10 @@ def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_ls
     }
 
     # Make a directory for the route
-    route_dir = "debug/{}".format(route_hash)
+    if strict:   
+        route_dir = "debug/strict/{}".format(route_hash)
+    else:
+        route_dir = "debug/default/{}".format(route_hash)
     if not os.path.exists(route_dir):
         os.makedirs(route_dir)
 
