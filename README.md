@@ -1,5 +1,7 @@
 # Signal Group (SG) Selector
 
+**With modifications for analysis**
+
 ![screenshot](https://user-images.githubusercontent.com/27271818/211346111-7f059454-eee2-4444-ba16-52c90bffb865.png)
 
 With the signal group (sg) selector service, it is possible to match traffic lights to routes. This is done by matching linestring geometries (MAP topologies) of traffic lights to the route geometry. In our application we often use the term LSA synonymously for SG/Traffic Light. LSA means Lichtsignalanlage in German.

@@ -7,10 +7,14 @@ from django.conf import settings
 from django.contrib.gis.geos import LineString
 from django.db.models.query import QuerySet
 from routing.matching import RouteMatcher
-from routing.matching.ml.features import get_features
+from routing.matching.ml.configs_production.datasets import \
+    config_data_and_features
 from routing.matching.ml.configs_production.trainings import config_train
-from routing.matching.ml.configs_production.datasets import config_data_and_features
-from routing.matching.ml.path_configs import models_production_path_osm, models_production_path_drn, models_evaluation_path_osm, models_evaluation_path_drn
+from routing.matching.ml.features import get_features
+from routing.matching.ml.path_configs import (models_evaluation_path_drn,
+                                              models_evaluation_path_osm,
+                                              models_production_path_drn,
+                                              models_production_path_osm)
 from routing.matching.overlap import OverlapMatcher, calc_sections
 
 
@@ -143,9 +147,22 @@ class MLMatcher(RouteMatcher):
 
         lsas, route = super().matches(lsas, route)
 
+        # Write lsa geometries to a json file for debugging purposes.
+        import json
+        with open('../data/model_analysis_LSAs.json', 'w') as f:
+            json.dump([lsa.geometry.wkt for lsa in lsas], f)
+        print("model_analysis_LSAs written to file")
+
+        # Write the route geometry to a json file for debugging purposes.
+        with open('../data/model_analysis_route.json', 'w') as f:
+            json.dump(route.wkt, f)
+        print("model_analysis_route written to file")
+
         # Calculate the features. What features are used is specified in the data/feature config.
         X = np.array([get_features(lsa, route, data_features_config)[0]
                      for lsa in lsas])
+
+        X_untransformed = X
 
         # If the dataset ist empty, return an empty queryset (when there are no lsas). 
         if len(X) == 0:
@@ -159,6 +176,29 @@ class MLMatcher(RouteMatcher):
 
         # Perform the matching.
         y = self.clf.predict(X)
+
+        # Write X and y to a json file for debugging purposes.
+        import json
+        with open('../data/model_analysis_X.json', 'w') as f:
+            json.dump(X, f)
+        print("model_analysis_X written to file")
+
+        # Append X any y to a csv file for debugging purposes.
+        import csv
+        with open('../data/model_analysis_X_untransformed.csv', 'a') as f:
+            writer = csv.writer(f)
+            for row in X_untransformed:
+                writer.writerow(row)
+        with open('../data/model_analysis_X.csv', 'a') as f:
+            writer = csv.writer(f)
+            for row in X:
+                writer.writerow(row)
+        print("model_analysis_X written to file")
+        with open('../data/model_analysis_y.csv', 'a') as f:
+            writer = csv.writer(f)
+            for row in y:
+                writer.writerow([row])
+        print("model_analysis_y written to file")
         
         # Don't perform overlap matching if no MLP is used (probabilites required for the overlap matching)
         # Also overlap matching won't need to be performed if no or only one MAP topology got matched ("y.count(1) < 2")

@@ -1,8 +1,8 @@
 import json
 import logging
+import time
 from collections import namedtuple
 from typing import Iterable, List
-import time
 
 import pyproj
 from django.conf import settings
@@ -15,13 +15,15 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from routing.matching import get_matches
-from routing.matching.hypermodel import TopologicHypermodelMatcher
-from routing.models import LSA, LSACrossing
+from routing.matching.bearing import get_bearing
+from routing.matching.hypermodel import (DijkstraHypermodelMatcher,
+                                         TopologicHypermodelMatcher)
 from routing.matching.ml.matcher import MLMatcher
+from routing.matching.projection import project_onto_route
 from routing.matching.proximity import ProximityMatcher
 from routing.matching_multi_lane.matcher import MultiLaneMatcher
-from routing.matching.bearing import get_bearing
-from routing.matching.projection import project_onto_route
+from routing.models import LSA, LSACrossing
+
 
 class RouteJsonValidator:
     def __init__(self, route_json):
@@ -280,6 +282,8 @@ class LSASelectionView(View):
             unordered_lsas = get_matches(route_linestring, [ ProximityMatcher(search_radius_m=20), MLMatcher(usedRouting) ]) 
         elif matcher == "legacy":
             unordered_lsas = get_matches(route_linestring, [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.{usedRouting}.updated.json') ])
+        elif matcher == "dijkstra":
+            unordered_lsas = get_matches(route_linestring, [ ProximityMatcher(search_radius_m=20), DijkstraHypermodelMatcher.from_config_file('config/shortest-path.hypermodel.json') ]) 
         else:
             return JsonResponse({"error": "Unsupported value provided for the parameter 'matcher'. Choose between 'ml' or 'legacy'."})
 
@@ -389,6 +393,3 @@ class MultiLaneSelectionView(View):
         }, indent=2 if settings.DEBUG else None, ensure_ascii=False)
         
         return HttpResponse(response_json, content_type="application/json")
-        
-        
-        

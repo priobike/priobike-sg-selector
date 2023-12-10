@@ -76,8 +76,11 @@ class DijkstraMatcher(RouteMatcher):
         if len(route_section.coords) < 2:
             return []
 
-        graph = self.create_graph(crossing_lsas, route_section)
+        graph, edges_coords = self.create_graph(crossing_lsas, route_section)
         shortest_path = dijkstra(graph, "start", "end")
+
+        _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_lsas, crossing_lsas.filter(id__in=shortest_path[1:-1]), "testroute", edges_coords)
+
         return shortest_path[1:-1] # Remove start and end
 
     def matches(self, lsas: QuerySet, route: LineString) -> Tuple[QuerySet, LineString]:
@@ -108,6 +111,8 @@ class DijkstraMatcher(RouteMatcher):
         # Note that id is "start" or "end" for the start and end node
         graph = defaultdict(list)
 
+        edges_coords = []
+
         system_route = route.transform(system, clone=True)
 
         route_start_point = system_route.interpolate_normalized(0)
@@ -122,11 +127,13 @@ class DijkstraMatcher(RouteMatcher):
             # Cost is: route_start_point -> lsa_start_point -> lsa_end_point
             start_point_to_lsa_cost = (self.offlsa_penalty * lsa_start_point.distance(route_start_point)) + lsa_geometry.length
             graph["start"].append((lsa.id, start_point_to_lsa_cost))
+            edges_coords.append((lsa_start_point, lsa_end_point))
 
             # All lsas are connected to the route end point
             # Cost is: lsa_end_point -> route_end_point
             lsa_to_end_point_cost = self.offlsa_penalty * lsa_end_point.distance(route_end_point)
             graph[lsa.id].append(("end", lsa_to_end_point_cost))
+            edges_coords.append((lsa_end_point, route_end_point))
 
             for other_lsa in lsas:
                 if other_lsa == lsa:
@@ -138,13 +145,15 @@ class DijkstraMatcher(RouteMatcher):
                 # The lsas are connected to each other
                 # Cost is: lsa_end_point -> other_lsa_start_point -> other_lsa_end_point
                 lsa_to_other_lsa_cost = (self.offlsa_penalty * lsa_end_point.distance(other_lsa_start_point)) + other_lsa_geometry.length
-                graph[lsa.id].append((other_lsa.id, lsa_to_other_lsa_cost))      
+                graph[lsa.id].append((other_lsa.id, lsa_to_other_lsa_cost))   
+                edges_coords.append((lsa_end_point, other_lsa_start_point))   
 
         # The start point is connected to the end point
         # Cost is: route_start_point -> route_end_point
         graph["start"].append(("end", self.offlsa_penalty * system_route.length))
+        edges_coords.append((route_start_point, route_end_point))
         
-        return graph
+        return graph, edges_coords
 
 
 class StrictDijkstraMatcher(DijkstraMatcher):
@@ -209,7 +218,7 @@ class StrictDijkstraMatcher(DijkstraMatcher):
         return graph
 
 
-def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_lsas, filtered_crossing_lsas, route_hash):
+def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_lsas, filtered_crossing_lsas, route_hash, edges_coords):
 
     features = [
         {
@@ -232,6 +241,26 @@ def _write_debug_geojson(route_section, crossing_id, crossing_bound, crossing_ls
             },
         },
     ]
+
+    # Plot the graph as well
+    for (c1, c2) in edges_coords:
+        c1_latlng, c2_latlng = c1.transform(settings.LONLAT, clone=True), c2.transform(settings.LONLAT, clone=True)
+        features.append({
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [c1_latlng.x, c1_latlng.y],
+                    [c2_latlng.x, c2_latlng.y],
+                ],
+            },
+            "properties": {
+                "stroke": "#0000ff",
+                "stroke-width": 2,
+                "stroke-opacity": 1,
+            },
+        })
+
     features += [
         {
             "type": "Feature",
