@@ -17,7 +17,7 @@ poetry run python backend/manage.py migrate
 poetry run python backend/manage.py load_crossings data/HH_WFS_Lichtsignalanlagen
 
 # Load the lsas from the .json dump
-poetry run python backend/manage.py load_lsas_from_file --path "../data/sgs-2023-01-11T14_30_50.004510.json"
+poetry run python backend/manage.py load_lsas_from_file --path data/sgs-2023-01-11T14_30_50.004510.json
 
 # Sync the crossings to the loaded lsas
 poetry run python backend/manage.py sync_crossings

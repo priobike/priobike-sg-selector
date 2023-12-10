@@ -5,10 +5,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       target: dev
-      args:
-        INSTALL_DEV_DEPENDENCIES: true
     volumes:
       - ./backend:/code
+    environment:
+      - DJANGO_DEBUG_MODE=True
     networks:
       - network
     ports:

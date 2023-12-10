@@ -1,19 +1,21 @@
 import functools
+import json
+import os
 from collections import defaultdict
 from time import perf_counter
-import os
-import json
-from routing.matching.ml.matcher import MLMatcher
-from routing.matching.proximity import ProximityMatcher
-from routing.matching.hypermodel import TopologicHypermodelMatcher
-from composer.utils import get_routes_with_bindings
+
 from analytics.models import Hit, RouteAnalysis, Run
 from composer.models import RouteLSABinding
+from composer.utils import get_routes_with_bindings
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import Avg
-from django.conf import settings
 from routing.matching import get_matches
+from routing.matching.hypermodel import TopologicHypermodelMatcher
+from routing.matching.ml.matcher import MLMatcher
+from routing.matching.proximity import ProximityMatcher
 from tqdm import tqdm
+
 
 class Command(BaseCommand):
     help = """
@@ -209,11 +211,11 @@ class Command(BaseCommand):
         print(f"TP: {tp}, FP: {fp}, FN: {fn}")
         print(f"Precision: {precision:.2f}")
         print(f"Recall: {recall:.2f}")
-        print(f"F1: {f1:.2f}")
+        print(f"F1: {f1}")
         print(f"TP_C: {tp_c}, FP_C: {fp_c}, FN_C: {fn_c}")
         print(f"Precision_C: {precision_c:.2f}")
         print(f"Recall_C: {recall_c:.2f}")
-        print(f"F1_C: {f1_c:.2f}")
+        print(f"F1_C: {f1_c}")
         print(f"Mean execution time: {mean_exec_time}s")
         
     def add_arguments(self, parser):
@@ -231,14 +233,26 @@ class Command(BaseCommand):
             
         route_data = options["route_data"]
             
-        if route_data != "osm" and route_data != "drn":
+        if route_data != "osm" and route_data != "drn" and route_data != "osm_old":
             raise Exception(
                 "Please provide a valid value for the route_data option ('osm' or 'drn').")
         
-        # Add strategies that should be analyized.
-        # strategies = {"ml-drn": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ]}
-        strategies = {"topo": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.drn.updated.json') ]}
-
+        if route_data == "osm":
+            strategies = {
+                "topo-osm": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.updated.json') ],
+                "ml-osm": [ ProximityMatcher(search_radius_m=20), MLMatcher("osm") ],
+            }
+        elif route_data == "drn":
+            strategies = {
+                "topo-drn": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.drn.updated.json') ],
+                "ml-drn": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ],
+            }
+        elif route_data == "osm_old":
+            strategies = {
+                "topo-osm-old": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.updated.json') ],
+                "ml-osm-old": [ ProximityMatcher(search_radius_m=20), MLMatcher("osm") ],
+            }
+        
         runs = []
         for strategy_name, strategy in strategies.items():
             run = self.profile_algorithm(strategy_name, strategy, route_data)

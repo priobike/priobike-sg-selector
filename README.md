@@ -4,6 +4,8 @@
 
 With the signal group (sg) selector service, it is possible to match traffic lights to routes. This is done by matching linestring geometries (MAP topologies) of traffic lights to the route geometry. In our application we often use the term LSA synonymously for SG/Traffic Light. LSA means Lichtsignalanlage in German.
 
+The service provides matching for OSM and DRN. For DRN see: https://github.com/priobike/priobike-graphhopper-drn
+
 ## Citing
 
 If you (re)use our work, please cite both papers:
@@ -175,6 +177,119 @@ In our app, we initially only supported routing based on OpenStreetMap (OSM) dat
 - Fewer unnecessary and incorrect detours on or off the cycle path
 
 As a result the routes based on DRN differ from the routes based on OSM. Since our two matching algorithms were tuned/trained on the characteristics of OSM-routes in comparison to the turn topologies, we also re-tuned/-trained them for the new DRN-based routes. To choose the routing specific matching approaches, append the query parameter `routing=osm`/`routing=drn` to the `/select`-endpoint (as shown here: [Response Format](#Response-format))
+
+## Reproducing / Benchmarking Results
+
+Note: the following benchmarks utilize the *complete* dataset. The ML model is trained on a part of this dataset.
+
+Cleanup, build and run the container and enter the shell:
+```
+docker-compose down -v
+docker-compose up -d --build --no-deps backend
+docker exec -it sg-selector-backend /bin/bash
+```
+
+Stay in the shell and prepare the data we need for experiments:
+```
+cd backend
+poetry run python manage.py load_constellations
+poetry run python manage.py load_errors
+````
+
+Keep in mind that switching between benchmarks requires starting from above, to ensure that no data is mixed up.
+
+After the `run_analysis` command is executed, it will print the benchmark score to the command line as the profiler runs through the routes. After the run is finished, results w.r.t routing errors and route-lane constellations are stored in `backend/backend/analytics/logs`. 
+
+### OSM benchmark on 2022 data (2414 traffic lights)
+
+Used for the benchmark in the paper.
+
+```
+poetry run python manage.py load_lsas_from_file_old_json_format --path ../data/lsadata_hamburg.json
+poetry run python manage.py load_example_routes ../data/example_routes_osm.json
+poetry run python manage.py load_bindings ../data/bindings_old/
+poetry run python manage.py run_analysis --route_data osm_old
+```
+
+This should result in:
+
+```
+Profiling algorithm topo-osm-old ... (148 routes)
+TP: 908, FP: 221, FN: 135
+Precision: 0.80
+Recall: 0.87
+F1: 0.8360957642725597
+```
+
+and
+
+```
+Profiling algorithm ml-osm-old ... (148 routes)
+TP: 936, FP: 57, FN: 107
+Precision: 0.94
+Recall: 0.90
+F1: 0.919449901768173
+```
+
+### OSM benchmark on 2023-01-11 data (5168 traffic lights)
+
+```
+poetry run python manage.py load_lsas_from_file --path ../data/sgs-2023-01-11T14_30_50.004510.json
+poetry run python manage.py load_example_routes ../data/example_routes_osm.json
+poetry run python manage.py load_bindings ../data/bindings_osm/
+poetry run python manage.py run_analysis --route_data osm
+```
+
+This should result in:
+
+```
+Profiling algorithm topo-osm ... (52 routes)
+TP: 637, FP: 136, FN: 121
+Precision: 0.82
+Recall: 0.84
+F1: 0.8321358589157413
+```
+
+and
+
+```
+Profiling algorithm topo-ml ... (52 routes)
+TP: 614, FP: 52, FN: 144
+Precision: 0.92
+Recall: 0.81
+F1: 0.8623595505617978
+```
+
+Note: The OSM benchmark data has no routing errors or constellations marked.
+
+### DRN benchmark on 2023-01-11 data (5168 traffic lights)
+
+```
+poetry run python manage.py load_lsas_from_file --path ../data/sgs-2023-01-11T14_30_50.004510.json
+poetry run python manage.py load_example_routes ../data/example_routes_drn.json
+poetry run python manage.py load_bindings ../data/bindings_drn/
+poetry run python manage.py run_analysis --route_data drn
+```
+
+This should result in:
+
+```
+Profiling algorithm topo-drn ... (49 routes)
+TP: 655, FP: 95, FN: 83
+Precision: 0.87
+Recall: 0.89
+F1: 0.8803763440860215
+```
+
+and
+
+```
+Profiling algorithm ml-drn ... (49 routes)
+TP: 676, FP: 24, FN: 62
+Precision: 0.97
+Recall: 0.92
+F1: 0.9401947148817803
+```
 
 ## Contributing
 

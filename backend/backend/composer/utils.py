@@ -1,11 +1,12 @@
-from itertools import chain
 import os
+from itertools import chain
 from typing import List
-from routing.matching.projection import project_onto_route
-from composer.models import RouteLSABinding
-from composer.models import Route
-from django.contrib.gis.geos.linestring import LineString
+
+from composer.models import Route, RouteLSABinding
 from django.conf import settings
+from django.contrib.gis.geos.linestring import LineString
+from routing.matching.projection import project_onto_route
+
 
 def get_routes_with_bindings(route_data):
     """
@@ -34,7 +35,7 @@ def get_routes_with_bindings(route_data):
     elif route_data == "drn":
         bindings_dir = "../data/bindings_drn/"
     elif route_data == "osm_old":
-        bindings_dir = "../data/bindings/"
+        bindings_dir = "../data/bindings_old/"
 
     files = [int(f.replace(".json", "")) for f in os.listdir(
         bindings_dir) if os.path.isfile(os.path.join(bindings_dir, f))]
