@@ -237,20 +237,22 @@ class Command(BaseCommand):
             raise Exception(
                 "Please provide a valid value for the route_data option ('osm' or 'drn').")
         
-        if route_data == "osm":
+        if route_data == "osm_old":
             strategies = {
-                "topo-osm": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.updated.json') ],
-                "ml-osm": [ ProximityMatcher(search_radius_m=20), MLMatcher("osm") ],
+                "topo-osm-2022-trained-on-osm-2022": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.json') ],
+                "topo-osm-2022-trained-on-osm-2023": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.updated.json') ],
+                "ml-osm-2022-trained-on-osm-2022": [ ProximityMatcher(search_radius_m=20), MLMatcher("osm") ],
+            }
+        elif route_data == "osm":
+            strategies = {
+                "topo-osm-2023-trained-on-osm-2022": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.json') ],
+                "topo-osm-2023-trained-on-osm-2023": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.updated.json') ],
+                "ml-osm-2023-trained-on-osm-2022": [ ProximityMatcher(search_radius_m=20), MLMatcher("osm") ],
             }
         elif route_data == "drn":
             strategies = {
-                "topo-drn": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.drn.updated.json') ],
-                "ml-drn": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ],
-            }
-        elif route_data == "osm_old":
-            strategies = {
-                "topo-osm-old": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.osm.updated.json') ],
-                "ml-osm-old": [ ProximityMatcher(search_radius_m=20), MLMatcher("osm") ],
+                "topo-drn-2023-trained-on-drn-2023": [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.drn.updated.json') ],
+                "ml-drn-2023-trained-on-drn-2023": [ ProximityMatcher(search_radius_m=20), MLMatcher("drn") ],
             }
         
         runs = []

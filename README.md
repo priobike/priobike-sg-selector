@@ -186,15 +186,15 @@ Note: the following benchmarks utilize the *complete* dataset. The ML model is t
 
 Cleanup, build and run the container and enter the shell:
 ```
-docker-compose down -v
-docker-compose up -d --build --no-deps backend
+docker-compose down -v && \
+docker-compose up -d --no-deps backend && \
 docker exec -it sg-selector-backend /bin/bash
 ```
 
 Stay in the shell and prepare the data we need for experiments:
 ```
-cd backend
-poetry run python manage.py load_constellations
+cd backend && \
+poetry run python manage.py load_constellations && \
 poetry run python manage.py load_errors
 ````
 
@@ -207,16 +207,26 @@ After the `run_analysis` command is executed, it will print the benchmark score 
 Used for the benchmark in the paper.
 
 ```
-poetry run python manage.py load_lsas_from_file_old_json_format --path ../data/lsadata_hamburg.json
-poetry run python manage.py load_example_routes ../data/example_routes_osm.json
-poetry run python manage.py load_bindings ../data/bindings_old/
+poetry run python manage.py load_lsas_from_file_old_json_format --path ../data/lsadata_hamburg.json && \
+poetry run python manage.py load_example_routes ../data/example_routes_osm.json && \
+poetry run python manage.py load_bindings ../data/bindings_old/ && \
 poetry run python manage.py run_analysis --route_data osm_old
 ```
 
 This should result in:
 
 ```
-Profiling algorithm topo-osm-old ... (148 routes)
+Profiling algorithm topo-osm-2022-trained-on-osm-2022 ... (148 routes)
+TP: 920, FP: 207, FN: 123
+Precision: 0.82
+Recall: 0.88
+F1: 0.847926267281106
+```
+
+and
+
+```
+Profiling algorithm topo-osm-2022-trained-on-osm-2023 ... (148 routes)
 TP: 908, FP: 221, FN: 135
 Precision: 0.80
 Recall: 0.87
@@ -226,7 +236,7 @@ F1: 0.8360957642725597
 and
 
 ```
-Profiling algorithm ml-osm-old ... (148 routes)
+Profiling algorithm ml-osm-2022-trained-on-osm-2022 ... (148 routes)
 TP: 936, FP: 57, FN: 107
 Precision: 0.94
 Recall: 0.90
@@ -236,16 +246,26 @@ F1: 0.919449901768173
 ### OSM benchmark on 2023-01-11 data (5168 traffic lights)
 
 ```
-poetry run python manage.py load_lsas_from_file --path ../data/sgs-2023-01-11T14_30_50.004510.json
-poetry run python manage.py load_example_routes ../data/example_routes_osm.json
-poetry run python manage.py load_bindings ../data/bindings_osm/
+poetry run python manage.py load_lsas_from_file --path ../data/sgs-2023-01-11T14_30_50.004510.json && \
+poetry run python manage.py load_example_routes ../data/example_routes_osm.json && \
+poetry run python manage.py load_bindings ../data/bindings_osm/ && \
 poetry run python manage.py run_analysis --route_data osm
 ```
 
 This should result in:
 
 ```
-Profiling algorithm topo-osm ... (52 routes)
+Profiling algorithm topo-osm-2023-trained-on-osm-2022 ... (52 routes)
+TP: 615, FP: 159, FN: 143
+Precision: 0.79
+Recall: 0.81
+F1: 0.8028720626631854
+```
+
+and
+
+```
+Profiling algorithm topo-osm-2023-trained-on-osm-2023 ... (52 routes)
 TP: 637, FP: 136, FN: 121
 Precision: 0.82
 Recall: 0.84
@@ -255,7 +275,7 @@ F1: 0.8321358589157413
 and
 
 ```
-Profiling algorithm topo-ml ... (52 routes)
+Profiling algorithm ml-osm-2023-trained-on-osm-2022 ... (52 routes)
 TP: 614, FP: 52, FN: 144
 Precision: 0.92
 Recall: 0.81
@@ -267,16 +287,16 @@ Note: The OSM benchmark data has no routing errors or constellations marked.
 ### DRN benchmark on 2023-01-11 data (5168 traffic lights)
 
 ```
-poetry run python manage.py load_lsas_from_file --path ../data/sgs-2023-01-11T14_30_50.004510.json
-poetry run python manage.py load_example_routes ../data/example_routes_drn.json
-poetry run python manage.py load_bindings ../data/bindings_drn/
+poetry run python manage.py load_lsas_from_file --path ../data/sgs-2023-01-11T14_30_50.004510.json && \
+poetry run python manage.py load_example_routes ../data/example_routes_drn.json && \
+poetry run python manage.py load_bindings ../data/bindings_drn/ && \
 poetry run python manage.py run_analysis --route_data drn
 ```
 
 This should result in:
 
 ```
-Profiling algorithm topo-drn ... (49 routes)
+Profiling algorithm topo-drn-2023-trained-on-drn-2023 ... (49 routes)
 TP: 655, FP: 95, FN: 83
 Precision: 0.87
 Recall: 0.89
@@ -286,7 +306,7 @@ F1: 0.8803763440860215
 and
 
 ```
-Profiling algorithm ml-drn ... (49 routes)
+Profiling algorithm ml-drn-2023-trained-on-drn-2023 ... (49 routes)
 TP: 676, FP: 24, FN: 62
 Precision: 0.97
 Recall: 0.92
