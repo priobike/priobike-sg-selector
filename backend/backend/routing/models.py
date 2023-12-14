@@ -19,6 +19,13 @@ class LSA(models.Model):
     # The geometry of the egress line
     egress_geometry = models.LineStringField(
         srid=settings.LONLAT, geography=True)
+    
+    # The bearing of the LSA.
+    # If the first two geometry coordinates go to the north, the bearing is 0.
+    # If the first two geometry coordinates go to the east, the bearing is 90.
+    # If the first two geometry coordinates go to the south, the bearing is 180.
+    # If the first two geometry coordinates go to the west, the bearing is 270.
+    bearing = models.FloatField(default=None, null=True)
 
     @cached_property
     def start_point(self) -> Point:

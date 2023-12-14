@@ -139,6 +139,7 @@ Results are in the following structure:
         "lon": 9.9902099,
         "lat": 53.5614479
       },
+      "bearing": 305.47283546104495,
       "id": "hamburg/271_14",
       "lsaId": "271_14",
       "connectionId": "14",

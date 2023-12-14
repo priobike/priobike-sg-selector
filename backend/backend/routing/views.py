@@ -1,8 +1,8 @@
 import json
 import logging
+import time
 from collections import namedtuple
 from typing import Iterable, List
-import time
 
 import pyproj
 from django.conf import settings
@@ -15,13 +15,14 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from routing.matching import get_matches
+from routing.matching.bearing import get_bearing
 from routing.matching.hypermodel import TopologicHypermodelMatcher
-from routing.models import LSA, LSACrossing
 from routing.matching.ml.matcher import MLMatcher
+from routing.matching.projection import project_onto_route
 from routing.matching.proximity import ProximityMatcher
 from routing.matching_multi_lane.matcher import MultiLaneMatcher
-from routing.matching.bearing import get_bearing
-from routing.matching.projection import project_onto_route
+from routing.models import LSA, LSACrossing
+
 
 class RouteJsonValidator:
     def __init__(self, route_json):
@@ -302,6 +303,7 @@ class LSASelectionView(View):
                     "lon": lsa.start_point.x,
                     "lat": lsa.start_point.y,
                 },
+                "bearing": lsa.bearing,
                 # Used to subscribe to the signal group
                 "id": lsa.lsametadata.signal_group_id,
                 "lsaId": lsa.id,

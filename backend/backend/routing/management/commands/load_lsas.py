@@ -1,6 +1,7 @@
 import requests
 from django.contrib.gis.geos import LineString
 from django.core.management.base import BaseCommand
+from routing.matching.bearing import get_bearing
 from routing.models import LSA, LSAMetadata
 
 
@@ -34,6 +35,13 @@ class Command(BaseCommand):
             lsa.ingress_geometry = LineString(paths[0])
             lsa.geometry = LineString(paths[1])
             lsa.egress_geometry = LineString(paths[2])
+
+        if len(lsa.geometry.coords) < 2:
+            raise ValueError("LSA must have at least 2 coordinates")
+        lon1, lat1 = lsa.geometry.coords[0][:2]
+        lon2, lat2 = lsa.geometry.coords[1][:2]
+        bearing = get_bearing(lon1, lat1, lon2, lat2)
+        lsa.bearing = bearing
 
         properties = thing["properties"]
         lsa_metadata = LSAMetadata(
