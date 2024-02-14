@@ -140,6 +140,17 @@ Results are in the following structure:
         "lat": 53.5614479
       },
       "bearing": 305.47283546104495,
+      "geometry": [
+        [
+          9.9902099,
+          53.5614479
+        ],
+        [...]
+        [
+          9.9895951,
+          53.561724
+        ]
+      ],
       "id": "hamburg/271_14",
       "lsaId": "271_14",
       "connectionId": "14",

@@ -304,6 +304,7 @@ class LSASelectionView(View):
                     "lat": lsa.start_point.y,
                 },
                 "bearing": lsa.bearing,
+                "geometry": lsa.geometry.coords,
                 # Used to subscribe to the signal group
                 "id": lsa.lsametadata.signal_group_id,
                 "lsaId": lsa.id,
