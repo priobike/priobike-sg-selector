@@ -404,10 +404,20 @@ class AllSGView(View):
         Handle the GET request.
         """
         try:
-            sgs = LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer").values("lsametadata__signal_group_id", "start_point")
+            sgs = LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer")
             
             # Serialize the data
-            response_json = json.dumps(list(sgs), indent=2 if settings.DEBUG else None, ensure_ascii=False)
+            sgs_info = [
+                {
+                    "id": sg.lsametadata.signal_group_id,
+                    "position": {
+                        "lon": sg.start_point.x,
+                        "lat": sg.start_point.y,
+                    },
+                }
+                for sg in sgs
+            ]
+            response_json = json.dumps(list(sgs_info), indent=2 if settings.DEBUG else None, ensure_ascii=False)
             
             return HttpResponse(response_json, content_type="application/json")
         except Exception:
