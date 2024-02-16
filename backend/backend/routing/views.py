@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib.gis.geos import LineString, Point
 from django.contrib.gis.measure import D
 from django.core.exceptions import ValidationError
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseServerError
 from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -392,6 +392,30 @@ class MultiLaneSelectionView(View):
         }, indent=2 if settings.DEBUG else None, ensure_ascii=False)
         
         return HttpResponse(response_json, content_type="application/json")
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class AllSGView(View):
+    """
+    View to return all bike signal groups available (location and ID).
+    """
+    
+    def post(self, request, *args, **kwargs):
+        """
+        Handle the POST request.
+        """
+        try:
+            sgs = LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer").values("lsametadata__signal_group_id", "start_point")
+            
+            # Serialize the data
+            response_json = json.dumps(list(sgs), indent=2 if settings.DEBUG else None, ensure_ascii=False)
+            
+            return HttpResponse(response_json, content_type="application/json")
+        except Exception:
+            return HttpResponseServerError()
+    
+    
+    
+    
         
         
         
