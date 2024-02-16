@@ -399,9 +399,9 @@ class AllSGView(View):
     View to return all bike signal groups available (location and ID).
     """
     
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
-        Handle the POST request.
+        Handle the GET request.
         """
         try:
             sgs = LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer").values("lsametadata__signal_group_id", "start_point")
