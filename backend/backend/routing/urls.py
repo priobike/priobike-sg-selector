@@ -1,6 +1,6 @@
 from django.urls import path
 
-from routing.views import LSASelectionView, MultiLaneSelectionView, AllSGViewGeo, AllSGViewMin
+from routing.views import LSASelectionView, MultiLaneSelectionView
 
 app_name = "routing"
 
