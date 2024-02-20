@@ -22,4 +22,7 @@ poetry run python backend/manage.py load_lsas_from_file --path data/sgs-2023-01-
 # Sync the crossings to the loaded lsas
 poetry run python backend/manage.py sync_crossings
 
+# Save all SGs to a gzipped json file in the static directory
+poetry run python backend/manage.py dump_sgs
+
 echo "Preheating complete!"

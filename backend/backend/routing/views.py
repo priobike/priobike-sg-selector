@@ -3,6 +3,7 @@ import logging
 import time
 from collections import namedtuple
 from typing import Iterable, List
+import os
 
 import pyproj
 from django.conf import settings
@@ -394,7 +395,7 @@ class MultiLaneSelectionView(View):
         return HttpResponse(response_json, content_type="application/json")
     
 @method_decorator(csrf_exempt, name='dispatch')
-class AllSGView(View):
+class AllSGViewMin(View):
     """
     View to return all bike signal groups available (location and ID).
     """
@@ -404,22 +405,30 @@ class AllSGView(View):
         Handle the GET request.
         """
         try:
-            sgs = LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer")
-            
-            # Serialize the data
-            sgs_info = [
-                {
-                    "id": sg.lsametadata.signal_group_id,
-                    "position": {
-                        "lon": sg.start_point.x,
-                        "lat": sg.start_point.y,
-                    },
-                }
-                for sg in sgs
-            ]
-            response_json = json.dumps(list(sgs_info), indent=2 if settings.DEBUG else None, ensure_ascii=False)
-            
-            return HttpResponse(response_json, content_type="application/json")
+            file = open(os.path.join(settings.BASE_DIR, 'static/sgs_min.json.gz'), "r")
+            response = HttpResponse(file)
+            response['Content-Encoding'] = 'gzip'
+            response['Content-Type'] = 'application/json'
+            return response
+        except Exception:
+            return HttpResponseServerError()
+        
+@method_decorator(csrf_exempt, name='dispatch')
+class AllSGViewGeo(View):
+    """
+    View to return all bike signal groups available (geometry and ID).
+    """
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Handle the GET request.
+        """
+        try:
+            file = open(os.path.join(settings.BASE_DIR, 'static/sgs_geo.json.gz'), "r")
+            response = HttpResponse(file)
+            response['Content-Encoding'] = 'gzip'
+            response['Content-Type'] = 'application/json'
+            return response
         except Exception:
             return HttpResponseServerError()
     
