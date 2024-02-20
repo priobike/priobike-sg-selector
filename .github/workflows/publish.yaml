@@ -76,7 +76,7 @@ jobs:
             CACHE_DATE=${{ github.event.repository.updated_at }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: meta_static
         # See: https://github.com/docker/metadata-action
         uses: docker/metadata-action@v4
         with:
@@ -89,8 +89,8 @@ jobs:
         with:
           context: backend
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta_static.outputs.tags }}
+          labels: ${{ steps.meta_static.outputs.labels }}
           target: static_proxy
           build-args: |
             FROST_API=${{ inputs.api }}
