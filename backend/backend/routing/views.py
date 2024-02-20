@@ -394,45 +394,6 @@ class MultiLaneSelectionView(View):
         
         return HttpResponse(response_json, content_type="application/json")
     
-@method_decorator(csrf_exempt, name='dispatch')
-class AllSGViewMin(View):
-    """
-    View to return all bike signal groups available (location and ID).
-    """
-    
-    def get(self, request, *args, **kwargs):
-        """
-        Handle the GET request.
-        """
-        try:
-            file = open(os.path.join(settings.BASE_DIR, 'static/sgs_min.json.gz'), "r")
-            response = HttpResponse(file)
-            response['Content-Encoding'] = 'gzip'
-            response['Content-Type'] = 'application/json'
-            return response
-        except Exception:
-            return HttpResponseServerError()
-        
-@method_decorator(csrf_exempt, name='dispatch')
-class AllSGViewGeo(View):
-    """
-    View to return all bike signal groups available (geometry and ID).
-    """
-    
-    def get(self, request, *args, **kwargs):
-        """
-        Handle the GET request.
-        """
-        try:
-            file = open(os.path.join(settings.BASE_DIR, 'static/sgs_geo.json.gz'), "r")
-            response = HttpResponse(file)
-            response['Content-Encoding'] = 'gzip'
-            response['Content-Type'] = 'application/json'
-            return response
-        except Exception:
-            return HttpResponseServerError()
-    
-    
     
     
         

@@ -74,3 +74,25 @@ jobs:
             FROST_API=${{ inputs.api }}
             FROST_FILTER=${{ inputs.filter }}
             CACHE_DATE=${{ github.event.repository.updated_at }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        # See: https://github.com/docker/metadata-action
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ inputs.registry }}/${{ inputs.image }}-static
+          tags: |
+            type=raw,value=${{ inputs.branch }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          target: static_proxy
+          build-args: |
+            FROST_API=${{ inputs.api }}
+            FROST_FILTER=${{ inputs.filter }}
+            CACHE_DATE=${{ github.event.repository.updated_at }}-${{ github.run_id }}-${{ github.run_attempt }}
