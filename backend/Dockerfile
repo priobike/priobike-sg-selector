@@ -81,4 +81,4 @@ CMD "./run-prod.sh"
 
 FROM nginx:1.25 AS static_proxy
 # Copy the static files from the production container
-COPY --from=production /code/static /usr/share/nginx/html
+COPY --from=production /code/backend/static /usr/share/nginx/html
