@@ -10,19 +10,61 @@ echo "Preheating the docker image..."
 # Run postgres in the background
 ./run-postgres.sh
 
+# Check if previous command failed. If it did, exit
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Failed to start postgres"
+    exit $ret
+fi
+
 # Run the migration script
 poetry run python backend/manage.py migrate
+
+# Check if previous command failed. If it did, exit
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Migration failed"
+    exit $ret
+fi
 
 # Load the crossings
 poetry run python backend/manage.py load_crossings data/HH_WFS_Lichtsignalanlagen
 
+# Check if previous command failed. If it did, exit
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Failed to load crossings data."
+    exit $ret
+fi
+
 # Load the lsas from the .json dump
 poetry run python backend/manage.py load_lsas_from_file --path data/sgs-2023-01-11T14_30_50.004510.json
+
+# Check if previous command failed. If it did, exit
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Failed to load SGs from dump."
+    exit $ret
+fi
 
 # Sync the crossings to the loaded lsas
 poetry run python backend/manage.py sync_crossings
 
+# Check if previous command failed. If it did, exit
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Failed to sync crossings."
+    exit $ret
+fi
+
 # Save all SGs to a gzipped json file in the static directory
 poetry run python backend/manage.py dump_sgs
+
+# Check if previous command failed. If it did, exit
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Failed to dump SGs."
+    exit $ret
+fi
 
 echo "Preheating complete!"
