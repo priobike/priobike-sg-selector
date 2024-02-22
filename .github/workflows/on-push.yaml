@@ -20,7 +20,7 @@ jobs:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-hamburg
       branch: stable
-      api: https://tld.iot.hamburg.de/v1.1
+      api: https://priobike.vkw.tu-dresden.de/production/priobike-frost-mirror/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
