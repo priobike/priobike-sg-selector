@@ -16,7 +16,7 @@ class Command(BaseCommand):
         intersections = {}
 
         for sg in sgs:
-            key = sg.lsametadata.connection_id.split("_").first()
+            key = sg.lsametadata.connection_id.split("_")[0]
             if key in intersections:
                 intersections[key].append(sg)
             else:
