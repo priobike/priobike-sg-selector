@@ -61,6 +61,9 @@ fi
 # Save all SGs to a gzipped json file in the static directory
 poetry run python backend/manage.py dump_sgs
 
+# Save all intersections to a gzipped json file in the static directory
+poetry run python backend/manage.py dump_intersections
+
 # Check if previous command failed. If it did, exit
 ret=$?
 if [ $ret -ne 0 ]; then
