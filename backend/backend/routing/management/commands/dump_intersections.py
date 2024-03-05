@@ -41,8 +41,35 @@ class Command(BaseCommand):
                     "coordinates": [x / len(sgs), y / len(sgs)],
                 },
             })
-        
-        json_output = json.dumps(intersection_centers, indent=None, ensure_ascii=False)
 
-        with gzip.open(os.path.join(settings.BASE_DIR, 'static/intersections.json.gz'), 'wb') as f:
-            f.write(str.encode(json_output))
+        # In Geojson format and with middlepoints of sg lanes.
+        intersection_lane_centers = {
+            "type": "FeatureCollection",
+            "features": [],
+            }
+
+        for key, sgs in intersections.items():
+            x = 0
+            y = 0
+            for sg in sgs:
+                middle = sg.geometry.interpolate_normalized(0.5)
+                x += middle.x
+                y += middle.y
+            intersection_lane_centers["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [x / len(sgs), y / len(sgs)],
+                },
+            })
+                
+        
+        json_output_centers = json.dumps(intersection_centers, indent=None, ensure_ascii=False)
+
+        with gzip.open(os.path.join(settings.BASE_DIR, 'static/intersections_centers.json.gz'), 'wb') as f:
+            f.write(str.encode(json_output_centers))
+
+        json_output_lane_centers = json.dumps(intersection_lane_centers, indent=None, ensure_ascii=False)
+
+        with gzip.open(os.path.join(settings.BASE_DIR, 'static/intersections_lane_centers.json.gz'), 'wb') as f:
+            f.write(str.encode(json_output_lane_centers))
