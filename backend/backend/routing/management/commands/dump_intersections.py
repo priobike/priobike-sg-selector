@@ -1,9 +1,10 @@
-import json
 import gzip
+import json
 import os
-from django.core.management.base import BaseCommand
+
 from django.conf import settings
-from routing.models import LSA
+from django.core.management.base import BaseCommand
+from routing.models import LSACrossing
 
 
 class Command(BaseCommand):
@@ -12,35 +13,19 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        sgs = LSA.objects.filter(lsametadata__lane_type__icontains="Radfahrer")
-        intersections = {}
-
-        for sg in sgs:
-            key = sg.lsametadata.signal_group_id.replace("hamburg/", "").split("_")[0]
-            if key in intersections:
-                intersections[key].append(sg)
-            else:
-                intersections[key] = [sg]
-
         intersection_centers = {
             "type": "FeatureCollection",
-            "features": [],
-            }
-
-        for key, sgs in intersections.items():
-            x = 0
-            y = 0
-            for sg in sgs:
-                middle = sg.geometry.interpolate_normalized(0.5)
-                x += middle.x
-                y += middle.y
-            intersection_centers["features"].append({
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [x / len(sgs), y / len(sgs)],
-                },
-            })
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [crossing.point.x, crossing.point.y],
+                    },
+                }
+                for crossing in LSACrossing.objects.filter(connected=True)
+            ],
+        }
         
         json_output = json.dumps(intersection_centers, indent=None, ensure_ascii=False)
 
