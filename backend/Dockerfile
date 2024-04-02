@@ -79,6 +79,6 @@ HEALTHCHECK --interval=60s --timeout=10s --retries=5 --start-period=10s \
   CMD curl --fail http://localhost:8000/healthcheck?token=healthcheck-token || exit 1
 CMD "./run-prod.sh"
 
-FROM nginx:1.25 AS static_proxy
+FROM bikenow.vkw.tu-dresden.de/priobike/priobike-nginx:release AS static_proxy
 # Copy the static files from the production container
 COPY --from=production /code/backend/static /usr/share/nginx/html
