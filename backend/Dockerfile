@@ -1,3 +1,5 @@
+ARG ENVIRONMENT=release
+
 FROM postgis/postgis:14-3.3 AS builder
 # This docker image is based on the bullseye operating system
 # See: https://github.com/postgis/docker-postgis/blob/master/14-3.3/Dockerfile
@@ -79,8 +81,6 @@ HEALTHCHECK --interval=60s --timeout=10s --retries=5 --start-period=10s \
   CMD curl --fail http://localhost:8000/healthcheck?token=healthcheck-token || exit 1
 CMD "./run-prod.sh"
 
-# We cant differentiate between staging (main), beta/production (stable) or release (release) here.
-# Therefore we just use the release tag since it is the most stable one.
-FROM bikenow.vkw.tu-dresden.de/priobike/priobike-nginx:release AS static_proxy
+FROM bikenow.vkw.tu-dresden.de/priobike/priobike-nginx:${ENVIRONMENT} AS static_proxy
 # Copy the static files from the production container
 COPY --from=production /code/backend/static /usr/share/nginx/html
