@@ -11,8 +11,8 @@ on:
         description: 'The Docker image name'
         required: true
         type: string
-      branch:
-        description: 'The branch to build'
+      ref_name:
+        description: 'The ref_name to build (can be branch or tag)'
         required: true
         type: string
       api:
@@ -44,7 +44,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ inputs.ref_name }}
 
       - name: Log in to the container registry
         uses: docker/login-action@v2
@@ -60,7 +60,7 @@ jobs:
         with:
           images: ${{ inputs.registry }}/${{ inputs.image }}
           tags: |
-            type=raw,value=${{ inputs.branch }}
+            type=raw,value=${{ inputs.ref_name }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -82,7 +82,7 @@ jobs:
         with:
           images: ${{ inputs.registry }}/${{ inputs.image }}-static
           tags: |
-            type=raw,value=${{ inputs.branch }}
+            type=raw,value=${{ inputs.ref_name }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4

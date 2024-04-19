@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yaml
+    with: 
+      branch: ${{ github.ref }}
+
+  publish-hamburg-release:
+    needs: test
+    uses: ./.github/workflows/publish.yaml
+    with:
+      registry: bikenow.vkw.tu-dresden.de
+      image: ${{ github.repository }}-hamburg
+      branch: release
+      api: https://priobike-release.inf.tu-dresden.de/priobike-frost-mirror/FROST-Server/v1.1
+      filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
+    secrets:
+      NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
+      NEXUS_DOCKER_PUB_PASSWORD: ${{ secrets.NEXUS_DOCKER_PUB_PASSWORD }}
