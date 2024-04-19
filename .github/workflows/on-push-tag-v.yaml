@@ -17,7 +17,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-hamburg
-      branch: ${{ github.ref_name }}
+      ref_name: ${{ github.ref_name }}
       api: https://priobike-release.inf.tu-dresden.de/priobike-frost-mirror/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
