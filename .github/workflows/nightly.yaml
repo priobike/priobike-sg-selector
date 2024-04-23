@@ -16,7 +16,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-hamburg
-      branch: main
+      ref_name: main
       api: https://tld.iot.hamburg.de/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
@@ -29,7 +29,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-sachsen
-      branch: main
+      ref_name: main
       api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
@@ -42,7 +42,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-hamburg
-      branch: stable
+      ref_name: stable
       api: https://priobike.vkw.tu-dresden.de/production/priobike-frost-mirror/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
@@ -55,7 +55,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-sachsen
-      branch: stable
+      ref_name: stable
       api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
@@ -68,7 +68,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-hamburg
-      branch: release
+      ref_name: release
       api: https://priobike-release.inf.tu-dresden.de/priobike-frost-mirror/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
@@ -81,7 +81,7 @@ jobs:
     with:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-sachsen
-      branch: release
+      ref_name: release
       api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
