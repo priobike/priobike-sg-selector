@@ -1,7 +1,7 @@
 import json
 import logging
 import time
-from collections import namedtuple
+from collections import namedtuple, Counter
 from typing import Iterable, List
 import os
 
@@ -277,6 +277,16 @@ class LSASelectionView(View):
         
         if usedRouting != "osm" and usedRouting != "drn":
             return JsonResponse({"error": "Unsupported value provided for the parameter 'routing'. Choose between 'osm' or 'drn'."})
+        
+        if not route_linestring.simple:
+            print("Route is not simple!")
+            print(route_linestring.geojson)
+            unary_union = route_linestring.unary_union
+            coords_list = []
+            for non_intersecting_geom in unary_union.coords[0]:
+                coords_list.append(non_intersecting_geom)
+            print("Intersection points:")
+            print([item for item, count in Counter(coords_list).items() if count > 1])
             
         if matcher == "ml":
             unordered_lsas = get_matches(route_linestring, [ ProximityMatcher(search_radius_m=20), MLMatcher(usedRouting) ]) 
