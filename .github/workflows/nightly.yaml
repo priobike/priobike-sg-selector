@@ -30,7 +30,7 @@ jobs:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-sachsen
       ref_name: main
-      api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
+      api: https://priobike.vkw.tu-dresden.de/staging/frost-server-web/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
@@ -56,7 +56,7 @@ jobs:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-sachsen
       ref_name: stable
-      api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
+      api: https://priobike.vkw.tu-dresden.de/staging/frost-server-web/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
@@ -82,7 +82,7 @@ jobs:
       registry: bikenow.vkw.tu-dresden.de
       image: ${{ github.repository }}-sachsen
       ref_name: release
-      api: http://priobike.vkw.tu-dresden.de:20055/FROST-Server/v1.1
+      api: https://priobike.vkw.tu-dresden.de/staging/frost-server-web/FROST-Server/v1.1
       filter: "%28Datastreams%2Fproperties%2FserviceName%20eq%20%27HH_STA_traffic_lights%27%29"
     secrets:
       NEXUS_DOCKER_PUB_USERNAME: ${{ secrets.NEXUS_DOCKER_PUB_USERNAME }}
