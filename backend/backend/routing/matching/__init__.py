@@ -39,7 +39,7 @@ class ElementwiseRouteMatcher(RouteMatcher):
         return lsas.filter(pk__in=pks_to_include), route
 
 
-def get_matches(route: LineString, matchers: List[RouteMatcher]) -> Iterable[LSA]:
+def get_matches(route: LineString, matchers: List[RouteMatcher]) -> QuerySet[LSA]:
     """
     Return all LSA's that match the route.
     """
