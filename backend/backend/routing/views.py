@@ -1,8 +1,7 @@
 import json
 import logging
-import os
 import time
-from collections import Counter, namedtuple
+from collections import namedtuple
 from typing import Iterable, List
 
 import pyproj
