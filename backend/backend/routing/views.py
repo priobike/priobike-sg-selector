@@ -3,14 +3,13 @@ import logging
 import time
 from collections import namedtuple
 from typing import Iterable, List
-import os
 
 import pyproj
 from django.conf import settings
 from django.contrib.gis.geos import LineString, Point
 from django.contrib.gis.measure import D
 from django.core.exceptions import ValidationError
-from django.http import JsonResponse, HttpResponseServerError
+from django.http import HttpResponseServerError, JsonResponse
 from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -277,13 +276,33 @@ class LSASelectionView(View):
         
         if usedRouting != "osm" and usedRouting != "drn":
             return JsonResponse({"error": "Unsupported value provided for the parameter 'routing'. Choose between 'osm' or 'drn'."})
-            
-        if matcher == "ml":
-            unordered_lsas = get_matches(route_linestring, [ ProximityMatcher(search_radius_m=20), MLMatcher(usedRouting) ]) 
-        elif matcher == "legacy":
-            unordered_lsas = get_matches(route_linestring, [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.{usedRouting}.updated.json') ])
+
+        if route_linestring.simple:
+            route_parts = [route_linestring]
         else:
-            return JsonResponse({"error": "Unsupported value provided for the parameter 'matcher'. Choose between 'ml' or 'legacy'."})
+            # If the route crosses itself, we split it into parts and match each part separately.
+            # Each part is buffered a bit to make sure the parts keep crossing the intersection fully.
+            unary_union = route_linestring.unary_union # multilinestring
+            route_parts = []
+            buffer = 100 # distance in meter
+            buffer_wgs84 = buffer / 40000000.0 * 360.0 # wgs84
+            for part in unary_union:
+                buffered = route_linestring.intersection(part.buffer(buffer_wgs84))
+                route_parts.append(buffered)
+
+        unordered_lsas = None # or queryset
+        for route_part in route_parts: # one part if the route does not cross itself, otherwise multiple buffered parts
+            if matcher == "ml":
+                matches = get_matches(route_part, [ ProximityMatcher(search_radius_m=20), MLMatcher(usedRouting) ]) 
+            elif matcher == "legacy":
+                matches = get_matches(route_part, [ TopologicHypermodelMatcher.from_config_file(f'config/topologic.hypermodel.{usedRouting}.updated.json') ])
+            else:
+                return JsonResponse({"error": "Unsupported value provided for the parameter 'matcher'. Choose between 'ml' or 'legacy'."})
+            if unordered_lsas is None:
+                unordered_lsas = matches
+            else:
+                # Remove duplicates from the matches. This may happen when the route crosses itself.
+                unordered_lsas = unordered_lsas.union(matches)
 
         # Snap the LSA positions to the route as marked waypoints
         lsa_snaps = snap_lsas(unordered_lsas, route_linestring)
